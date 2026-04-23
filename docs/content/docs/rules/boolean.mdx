@@ -1,0 +1,25 @@
+---
+title: Boolean
+description: Validate boolean fields with true or false expectations.
+---
+
+Use `bool("field")` for boolean fields.
+
+```java
+Teki schema = Teki.fromRules(
+    bool("termsAccepted").isTrue(),
+    bool("archived").isFalse()
+);
+```
+
+## Available methods
+
+| Method         | Purpose                         |
+| -------------- | ------------------------------- |
+| `isTrue()`     | Require the value to be `true`  |
+| `isFalse()`    | Require the value to be `false` |
+| `custom(Rule)` | Attach a custom rule            |
+
+## Notes
+
+`bool(...)` is for explicit boolean assertions, such as requiring a terms checkbox to be accepted.

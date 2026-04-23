@@ -1,0 +1,34 @@
+---
+title: After
+description: Require a date or time strictly after a fixed boundary.
+---
+
+Use `after(Instant)` on temporal fields to enforce a lower bound. The value must be strictly after the given instant.
+
+```java
+Teki schema = Teki.fromRules(
+    temporal("publishedAt").required().after(Instant.parse("2020-01-01T00:00:00Z"))
+);
+```
+
+## Available on
+
+- `temporal(...)`
+
+## Annotation equivalent
+
+Pass an ISO-8601 string. Both date-only and full date-time formats are accepted.
+
+```java
+import dev.ditsche.teki.annotation.After;
+
+public class ArticleRequest {
+    @After("2020-01-01")
+    private LocalDate publishedAt;
+
+    @After("2020-01-01T00:00:00Z")
+    private Instant indexedAt;
+}
+```
+
+`LocalDate` strings (`"2020-01-01"`) are interpreted as the start of that day in the system default timezone. Use a full offset string (`"2020-01-01T00:00:00Z"`) to pin to a specific instant.

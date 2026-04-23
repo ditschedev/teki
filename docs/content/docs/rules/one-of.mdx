@@ -1,0 +1,31 @@
+---
+title: One Of
+description: Restrict a field to a fixed set of allowed values.
+---
+
+Use `oneOf(String...)` on string fields to require the value to match one of a predefined set.
+
+```java
+Teki schema = Teki.fromRules(
+    string("status").required().oneOf("active", "inactive", "pending"),
+    string("role").required().oneOf("admin", "editor", "viewer")
+);
+```
+
+Comparison is case-sensitive.
+
+## Available on
+
+- `string(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.OneOf;
+
+public class UserRequest {
+    @Required
+    @OneOf({"admin", "editor", "viewer"})
+    private String role;
+}
+```

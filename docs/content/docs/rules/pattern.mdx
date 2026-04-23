@@ -1,0 +1,27 @@
+---
+title: Pattern
+description: Validate strings with a regular expression.
+---
+
+Use `pattern(...)` when a string must match a regular expression.
+
+```java
+Teki schema = Teki.fromRules(
+    string("slug").required().pattern("[a-z0-9-]+")
+);
+```
+
+## Available on
+
+- `string(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.Pattern;
+
+public class ProjectRequest {
+    @Pattern("[a-z0-9-]+")
+    private String slug;
+}
+```

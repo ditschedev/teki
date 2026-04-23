@@ -1,0 +1,26 @@
+---
+title: Optional
+description: Skip validation when supported fields are missing.
+---
+
+Use `optional()` when a field may be absent, but should still be validated if present.
+
+```java
+Teki schema = Teki.fromRules(
+    string("website").optional().url(),
+    object("metadata").optional().fields(
+        string("source").optional().max(40)
+    ),
+    array("tags").optional().elements().string()
+);
+```
+
+## Available on
+
+- `string(...)`
+- `object(...)`
+- `array(...)`
+
+## Annotation behavior
+
+When using `Teki.from(Class<?>)`, fields without `@Required` are treated as optional automatically.

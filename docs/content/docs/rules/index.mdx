@@ -1,0 +1,171 @@
+---
+title: Rules Overview
+description: Browse Teki's built-in builders, presence rules, string rules, and range rules.
+---
+
+Import the builder entry points from `Rules` when using the fluent API:
+
+```java
+import static dev.ditsche.teki.rule.builder.Rules.*;
+```
+
+Rules are organized around the shape of the field first, then the constraints you add to that field.
+
+## Builders
+
+<Cards>
+  <Card
+    title="String"
+    href="/docs/rules/string"
+    description="Validate text fields and chain string-specific constraints."
+  />
+  <Card
+    title="Number"
+    href="/docs/rules/number"
+    description="Validate numeric fields with min, max, size, and defaults."
+  />
+  <Card
+    title="Boolean"
+    href="/docs/rules/boolean"
+    description="Validate boolean values with true or false expectations."
+  />
+  <Card
+    title="Array"
+    href="/docs/rules/array"
+    description="Validate arrays, iterables, array elements, and arrays of objects."
+  />
+  <Card
+    title="Object"
+    href="/docs/rules/object"
+    description="Validate nested objects with child field rules."
+  />
+  <Card
+    title="Temporal"
+    href="/docs/rules/temporal"
+    description="Validate date and time fields with past, future, and boundary rules."
+  />
+</Cards>
+
+## Presence and normalization
+
+<Cards>
+  <Card title="Required" href="/docs/rules/required" description="Reject missing values." />
+  <Card
+    title="Optional"
+    href="/docs/rules/optional"
+    description="Skip validation when supported fields are missing."
+  />
+  <Card
+    title="Default"
+    href="/docs/rules/default"
+    description="Fill missing values with a fallback."
+  />
+  <Card
+    title="Trim"
+    href="/docs/rules/trim"
+    description="Normalize string values by trimming surrounding whitespace."
+  />
+</Cards>
+
+## String validation
+
+<Cards>
+  <Card title="Email" href="/docs/rules/email" description="Validate email addresses." />
+  <Card title="URL" href="/docs/rules/url" description="Validate URLs." />
+  <Card
+    title="Pattern"
+    href="/docs/rules/pattern"
+    description="Validate strings with a regular expression."
+  />
+  <Card
+    title="Alphanumeric"
+    href="/docs/rules/alphanum"
+    description="Allow only letters and digits."
+  />
+  <Card title="IP Address" href="/docs/rules/ip-address" description="Validate IP addresses." />
+  <Card
+    title="Credit Card"
+    href="/docs/rules/credit-card"
+    description="Validate credit card numbers."
+  />
+  <Card title="UUID" href="/docs/rules/uuid" description="Validate UUID strings." />
+  <Card
+    title="Not Blank"
+    href="/docs/rules/not-blank"
+    description="Reject null and whitespace-only strings."
+  />
+  <Card
+    title="One Of"
+    href="/docs/rules/one-of"
+    description="Restrict a field to a fixed set of allowed values."
+  />
+</Cards>
+
+## Size and range
+
+<Cards>
+  <Card
+    title="Min"
+    href="/docs/rules/min"
+    description="Require a minimum value, length, or size."
+  />
+  <Card
+    title="Max"
+    href="/docs/rules/max"
+    description="Require a maximum value, length, or size."
+  />
+  <Card title="Length" href="/docs/rules/length" description="Require an exact length." />
+  <Card
+    title="Size"
+    href="/docs/rules/size"
+    description="Require a value, length, or size to fall within a range."
+  />
+  <Card
+    title="Positive"
+    href="/docs/rules/positive"
+    description="Require a number to be greater than zero."
+  />
+  <Card
+    title="Negative"
+    href="/docs/rules/negative"
+    description="Require a number to be less than zero."
+  />
+</Cards>
+
+## Temporal
+
+<Cards>
+  <Card title="Past" href="/docs/rules/past" description="Require a date in the past." />
+  <Card title="Future" href="/docs/rules/future" description="Require a date in the future." />
+  <Card
+    title="Past or Present"
+    href="/docs/rules/past-or-present"
+    description="Require a date in the past or equal to now."
+  />
+  <Card
+    title="Future or Present"
+    href="/docs/rules/future-or-present"
+    description="Require a date in the future or equal to now."
+  />
+  <Card
+    title="Before"
+    href="/docs/rules/before"
+    description="Require a date before a fixed boundary."
+  />
+  <Card
+    title="After"
+    href="/docs/rules/after"
+    description="Require a date after a fixed boundary."
+  />
+</Cards>
+
+## Example
+
+```java
+Teki schema = Teki.fromRules(
+    string("email").required().email().trim(),
+    string("username").required().alphanum().min(3).max(24),
+    number("age").min(13),
+    array("roles").elements().string().min(2).max(32)
+);
+```

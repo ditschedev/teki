@@ -1,0 +1,29 @@
+---
+title: Not Blank
+description: Reject null and whitespace-only strings.
+---
+
+Use `notBlank()` on string fields to reject values that are null or consist entirely of whitespace. This is stricter than `required()`, which accepts a string of spaces.
+
+```java
+Teki schema = Teki.fromRules(
+    string("name").notBlank()
+);
+```
+
+`"   "` fails. `""` fails. `null` fails. `"Alice"` passes.
+
+## Available on
+
+- `string(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.NotBlank;
+
+public class ProfileRequest {
+    @NotBlank
+    private String displayName;
+}
+```

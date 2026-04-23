@@ -1,0 +1,67 @@
+---
+title: Cross-field validation
+description: Validate relationships between fields and apply rules conditionally.
+---
+
+Some validation rules depend on the values of multiple fields. Teki supports two mechanisms for this: conditional blocks with `when()` and whole-object invariants with `constraint()`.
+
+Both are available on schemas built with `Teki.fromRules(...)`. They cannot be added to cached schemas obtained from `Teki.from(Class)`.
+
+## Conditional validation
+
+`when(predicate, ...builders)` runs a set of validation rules only when a predicate on the full object holds. The predicate receives the object being validated.
+
+```java
+Teki schema = Teki.fromRules(
+    number("age").required(),
+    string("parentName").optional(),
+    string("guardianEmail").optional()
+)
+.when(
+    p -> p.getAge() < 18,
+    string("parentName").required(),
+    string("guardianEmail").required().email()
+);
+```
+
+When `age < 18`, both `parentName` and `guardianEmail` are required and validated against their rules. When the predicate does not hold, those builders are skipped entirely.
+
+Multiple `when()` blocks can be chained. Each is evaluated independently.
+
+```java
+Teki schema = Teki.fromRules(
+    string("accountType").required(),
+    string("vatNumber").optional(),
+    string("companyName").optional()
+)
+.when(
+    p -> "business".equals(p.getAccountType()),
+    string("vatNumber").required().pattern("[A-Z]{2}[0-9]+"),
+    string("companyName").required().min(2)
+);
+```
+
+You can also pass pre-built `Validatable` instances instead of builders:
+
+```java
+Validatable vatRule = string("vatNumber").required().build();
+schema.when(p -> "business".equals(p.getAccountType()), vatRule);
+```
+
+## Whole-object invariants
+
+`constraint(predicate, field, message)` checks an invariant after all per-field validation completes. The predicate should return `true` when the invariant holds. When it returns `false`, an error is attached to the named field.
+
+```java
+Teki schema = Teki.fromRules(
+    string("password").required(),
+    string("passwordConfirm").required()
+)
+.constraint(
+    p -> p.getPassword().equals(p.getPasswordConfirm()),
+    "passwordConfirm",
+    "Passwords do not match"
+);
+```
+
+Use `constraint()` for checks that span fields but do not require running additional rule chains. Use `when()` when the condition should activate one or more full field validations.

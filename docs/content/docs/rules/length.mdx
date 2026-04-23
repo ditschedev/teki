@@ -1,0 +1,32 @@
+---
+title: Length
+description: Require an exact length.
+---
+
+Use `length(...)` when a value must have an exact length.
+
+```java
+Teki schema = Teki.fromRules(
+    string("code").length(6),
+    number("pin").length(4),
+    array("slots").length(3)
+);
+```
+
+## Available on
+
+- `string(...)`
+- `number(...)`
+- `array(...)`
+- `elements()`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.Length;
+
+public class VerifyRequest {
+    @Length(6)
+    private String code;
+}
+```

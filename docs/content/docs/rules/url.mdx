@@ -1,0 +1,27 @@
+---
+title: URL
+description: Validate URL strings.
+---
+
+Use `url()` on string fields.
+
+```java
+Teki schema = Teki.fromRules(
+    string("website").optional().url()
+);
+```
+
+## Available on
+
+- `string(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.Url;
+
+public class Profile {
+    @Url
+    private String website;
+}
+```

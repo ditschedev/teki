@@ -1,0 +1,30 @@
+---
+title: UUID
+description: Validate UUID strings.
+---
+
+Use `uuid()` on string fields to require a well-formed UUID.
+
+```java
+Teki schema = Teki.fromRules(
+    string("id").required().uuid()
+);
+```
+
+All standard UUID formats are accepted regardless of case.
+
+## Available on
+
+- `string(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.Uuid;
+
+public class ResourceRequest {
+    @Required
+    @Uuid
+    private String id;
+}
+```

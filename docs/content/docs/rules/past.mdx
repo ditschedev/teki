@@ -1,0 +1,27 @@
+---
+title: Past
+description: Require a date or time strictly in the past.
+---
+
+Use `past()` on temporal fields to reject dates that are not before the current instant.
+
+```java
+Teki schema = Teki.fromRules(
+    temporal("birthDate").required().past()
+);
+```
+
+## Available on
+
+- `temporal(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.Past;
+
+public class ProfileRequest {
+    @Past
+    private LocalDate birthDate;
+}
+```

@@ -1,0 +1,35 @@
+---
+title: Default
+description: Fill missing values with a fallback.
+---
+
+Use `defaultValue(...)` to write a fallback value when a field is missing.
+
+```java
+Teki schema = Teki.fromRules(
+    string("role").defaultValue("user"),
+    number("retries").defaultValue(0)
+);
+
+schema.validate(request);
+```
+
+After validation, Teki writes the default value back to the validated object when needed.
+
+## Available on
+
+- `string(...)`
+- `number(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.Default;
+
+public class SearchRequest {
+    @Default("25")
+    private Integer limit;
+}
+```
+
+The annotation scanner converts defaults for common primitive and wrapper types, including `int`, `long`, `double`, `float`, and `boolean`.

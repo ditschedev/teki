@@ -1,0 +1,94 @@
+---
+title: Annotations
+description: Define validation rules directly on Java fields and scan them into a Teki schema.
+---
+
+Annotations are useful when a class should carry its own validation contract. Call `Teki.from(YourClass.class)` to scan supported annotations into a reusable validator.
+
+```java
+import dev.ditsche.teki.Teki;
+import dev.ditsche.teki.annotation.Email;
+import dev.ditsche.teki.annotation.Required;
+import dev.ditsche.teki.annotation.Size;
+import dev.ditsche.teki.annotation.Trim;
+
+public class SignupRequest {
+    @Required
+    @Email
+    @Trim
+    private String email;
+
+    @Required
+    @Size(min = 8, max = 128)
+    private String password;
+}
+
+Teki.from(SignupRequest.class).validate(request);
+```
+
+## Required and optional
+
+Fields without `@Required` are treated as optional. Teki skips their validation when the value is `null`.
+
+```java
+public class ProfileUpdate {
+    @Trim
+    @Size(min = 2, max = 80)
+    private String displayName;
+}
+```
+
+In this example, `displayName` may be omitted. If it is present, Teki trims it and checks the size.
+
+## Supported annotations
+
+| Annotation                    | Purpose                             |
+| ----------------------------- | ----------------------------------- |
+| `@Required`                   | Rejects missing values              |
+| `@Trim`                       | Trims string values                 |
+| `@Email`                      | Validates email addresses           |
+| `@Url`                        | Validates URLs                      |
+| `@IpAddress`                  | Validates IP addresses              |
+| `@AlphaNumeric`               | Allows only alphanumeric text       |
+| `@CreditCard`                 | Validates credit card numbers       |
+| `@Pattern("...")`             | Validates with a regular expression |
+| `@Min(value)`                 | Enforces a minimum value or length  |
+| `@Max(value)`                 | Enforces a maximum value or length  |
+| `@Length(value)`              | Enforces an exact length            |
+| `@Size(min = ..., max = ...)` | Enforces a range                    |
+| `@Default("...")`             | Applies a default value             |
+| `@Past`                       | Requires a date in the past         |
+| `@Future`                     | Requires a date in the future       |
+| `@PastOrPresent`              | Requires a date in the past or now  |
+| `@FutureOrPresent`            | Requires a date in the future or now |
+| `@Before("...")`              | Requires a date before a fixed boundary |
+| `@After("...")`               | Requires a date after a fixed boundary  |
+| `@Uuid`                       | Validates UUID format                   |
+| `@NotBlank`                   | Rejects null and whitespace-only strings |
+| `@OneOf({"..."})`             | Requires the value to be in a fixed set |
+| `@Positive`                   | Requires a number > zero                |
+| `@PositiveOrZero`             | Requires a number ≥ zero                |
+| `@Negative`                   | Requires a number < zero                |
+| `@NegativeOrZero`             | Requires a number ≤ zero                |
+
+## Defaults
+
+`@Default` stores its value as a string and converts it for common primitive wrapper types.
+
+```java
+import dev.ditsche.teki.annotation.Default;
+
+public class SearchRequest {
+    @Default("25")
+    private Integer limit;
+
+    @Default("false")
+    private Boolean includeArchived;
+}
+```
+
+Supported conversions include `int`, `long`, `double`, `float`, `boolean`, and their wrapper types. Other field types receive the raw string value.
+
+## Caching
+
+`Teki.from(Class<?>)` caches scanned validators by class. You can call it where you need validation without paying the reflection scan every time.

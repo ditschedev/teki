@@ -1,0 +1,18 @@
+{
+  "title": "Teki",
+  "pages": [
+    "---Start---",
+    "index",
+    "getting-started",
+    "guides",
+    "---Defining schemas---",
+    "schemas",
+    "annotations",
+    "---Rules---",
+    "rules",
+    "custom-rules",
+    "cross-field",
+    "---Handling results---",
+    "errors"
+  ]
+}

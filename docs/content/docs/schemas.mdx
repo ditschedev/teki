@@ -1,0 +1,143 @@
+---
+title: Schemas
+description: Build reusable object validators with Teki's fluent rule builders.
+---
+
+The schema API starts with `Teki.fromRules(...)`. Each rule builder names the field it validates and chains the constraints for that field.
+
+```java
+import dev.ditsche.teki.Teki;
+
+import static dev.ditsche.teki.rule.builder.Rules.*;
+
+Teki profileSchema = Teki.fromRules(
+    string("username").required().alphanum().min(3).max(24),
+    string("website").optional().url(),
+    number("reputation").defaultValue(0).min(0),
+    bool("termsAccepted").isTrue()
+);
+```
+
+## Field names
+
+Teki validates Java objects by matching rule names to fields. A rule such as `string("email")` validates a field named `email` on the object passed to `validate(...)`.
+
+Fields declared on superclasses are included. Missing fields are ignored, which makes it possible to reuse a schema across related DTOs when only some fields are present.
+
+You can also select fields with method references. Getter references are converted to the matching field name, and record accessors work directly:
+
+```java
+class Person {
+    String name;
+    int age;
+
+    String getName() {
+        return name;
+    }
+
+    int getAge() {
+        return age;
+    }
+}
+
+record SignupRequest(String email, int age) {}
+
+Teki personSchema = Teki.fromRules(
+    string(Person::getName).required(),
+    number(Person::getAge).min(18)
+);
+
+Teki signupSchema = Teki.fromRules(
+    string(SignupRequest::email).required().email(),
+    number(SignupRequest::age).min(13)
+);
+```
+
+Records can be validated with fluent schemas or annotations. Because records are immutable, rules that normalize values, such as `trim()` and `defaultValue(...)`, return a new record instance when a value changes. Use the value returned from `validate(...)`.
+
+## Objects
+
+Use `object("field")` for nested objects:
+
+```java
+Teki orderSchema = Teki.fromRules(
+    string("orderId").required(),
+    object("customer").fields(
+        string("email").required().email(),
+        string("name").required().min(2)
+    )
+);
+```
+
+Errors from nested objects are reported with a dotted path such as `customer.email`.
+
+## Arrays
+
+Use `array("field")` for arrays and `Iterable` values:
+
+```java
+Teki tagsSchema = Teki.fromRules(
+    array("tags").required().min(1).max(10).elements().string().min(2).max(32)
+);
+```
+
+For arrays of objects, use `objects(...)`:
+
+```java
+Teki cartSchema = Teki.fromRules(
+    array("items").required().objects(
+        string("sku").required().alphanum(),
+        number("quantity").required().min(1)
+    )
+);
+```
+
+## Optional values
+
+String, object, and array builders support `optional()`. Optional fields skip validation when the value is missing.
+
+```java
+Teki schema = Teki.fromRules(
+    string("middleName").optional().trim(),
+    object("metadata").optional().fields(
+        string("source").optional().max(40)
+    )
+);
+```
+
+## Conditional validation
+
+`when(predicate, ...builders)` runs a set of field rules only when a predicate on the full object holds. The predicate receives the object being validated.
+
+```java
+Teki schema = Teki.fromRules(
+    number("age").required(),
+    string("parentName").optional(),
+    string("guardianEmail").optional()
+)
+.when(
+    p -> p.getAge() < 18,
+    string("parentName").required(),
+    string("guardianEmail").required().email()
+);
+```
+
+Multiple `when()` blocks can be chained. Each is evaluated independently. See [Cross-field validation](/docs/cross-field) for the full reference including `constraint()`.
+
+## Normalizing values
+
+Some rules can change the validated object:
+
+- `trim()` removes surrounding whitespace from strings
+- `defaultValue(...)` fills in a fallback value when the field is missing
+
+```java
+Teki schema = Teki.fromRules(
+    string("email").required().email().trim(),
+    string("role").defaultValue("user")
+);
+
+schema.validate(request);
+```
+
+After validation, `request.email` contains the trimmed value and `request.role` contains `user` when it was not provided.

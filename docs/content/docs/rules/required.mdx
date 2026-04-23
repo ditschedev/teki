@@ -1,0 +1,34 @@
+---
+title: Required
+description: Reject missing values.
+---
+
+Use `required()` when a field must be present.
+
+```java
+Teki schema = Teki.fromRules(
+    string("email").required(),
+    number("age").required(),
+    array("roles").required()
+);
+```
+
+## Available on
+
+- `string(...)`
+- `number(...)`
+- `array(...)`
+- `elements()`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.Required;
+
+public class SignupRequest {
+    @Required
+    private String email;
+}
+```
+
+Fields with `@Required` are always validated. Fields without `@Required` are treated as optional by the annotation scanner.

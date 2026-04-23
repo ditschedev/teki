@@ -1,0 +1,27 @@
+---
+title: Future
+description: Require a date or time strictly in the future.
+---
+
+Use `future()` on temporal fields to reject dates that are not after the current instant.
+
+```java
+Teki schema = Teki.fromRules(
+    temporal("scheduledAt").required().future()
+);
+```
+
+## Available on
+
+- `temporal(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.Future;
+
+public class AppointmentRequest {
+    @Future
+    private Instant scheduledAt;
+}
+```

@@ -1,0 +1,34 @@
+---
+title: Before
+description: Require a date or time strictly before a fixed boundary.
+---
+
+Use `before(Instant)` on temporal fields to enforce an upper bound. The value must be strictly before the given instant.
+
+```java
+Teki schema = Teki.fromRules(
+    temporal("deadline").required().before(Instant.parse("2026-01-01T00:00:00Z"))
+);
+```
+
+## Available on
+
+- `temporal(...)`
+
+## Annotation equivalent
+
+Pass an ISO-8601 string. Both date-only and full date-time formats are accepted.
+
+```java
+import dev.ditsche.teki.annotation.Before;
+
+public class SubmissionRequest {
+    @Before("2026-01-01")
+    private LocalDate deadline;
+
+    @Before("2026-01-01T00:00:00Z")
+    private Instant cutoff;
+}
+```
+
+`LocalDate` strings (`"2026-01-01"`) are interpreted as the start of that day in the system default timezone. Use a full offset string (`"2026-01-01T00:00:00Z"`) to pin to a specific instant.

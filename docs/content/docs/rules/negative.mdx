@@ -1,0 +1,41 @@
+---
+title: Negative
+description: Require a number strictly less than zero.
+---
+
+Use `negative()` on number fields to reject zero and positive values.
+
+```java
+Teki schema = Teki.fromRules(
+    number("adjustment").required().negative()
+);
+```
+
+Use `negativeOrZero()` to allow zero as well.
+
+```java
+Teki schema = Teki.fromRules(
+    number("balance").negativeOrZero()
+);
+```
+
+Both methods work with `int`, `long`, `double`, `float`, `BigDecimal`, and their boxed equivalents.
+
+## Available on
+
+- `number(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.Negative;
+import dev.ditsche.teki.annotation.NegativeOrZero;
+
+public class AdjustmentRequest {
+    @Negative
+    private int delta;
+
+    @NegativeOrZero
+    private double overdraftLimit;
+}
+```

@@ -1,0 +1,96 @@
+---
+title: Getting Started
+description: Add Teki to your project and validate your first object.
+---
+
+## Installation
+
+Add Teki to your Maven project:
+
+```xml title="pom.xml"
+<dependency>
+  <groupId>dev.ditsche</groupId>
+  <artifactId>teki</artifactId>
+  <version>3.0.0</version>
+</dependency>
+```
+
+Please check the [GitHub releases](https://github.com/ditschedev/teki/releases) for the latest version.
+
+<Callout type="warning">Teki requires **Java 17** or later.</Callout>
+
+## Your first schema
+
+Create a small DTO and validate it with `Teki.fromRules(...)`:
+
+```java
+import dev.ditsche.teki.Teki;
+
+import static dev.ditsche.teki.rule.builder.Rules.*;
+
+public class SignupRequest {
+    private String email;
+    private String password;
+    private Integer age;
+}
+
+Teki signupSchema = Teki.fromRules(
+    string("email").required().email().trim(),
+    string("password").required().min(8),
+    number("age").min(13)
+);
+
+SignupRequest validRequest = signupSchema.validate(request);
+```
+
+`validate(...)` returns the same object when validation passes. Some rules can normalize the object while validating it. For example, `trim()` writes the trimmed string back to the field and `defaultValue(...)` fills in a missing value.
+
+## Handling validation errors
+
+When validation fails, Teki throws `ValidationException` with one or more field errors:
+
+```java
+import dev.ditsche.teki.error.ValidationException;
+
+try {
+    signupSchema.validate(request);
+} catch (ValidationException exception) {
+    exception.getErrors().forEach(error -> {
+        System.out.println(error.getField());
+        error.getErrors().forEach(info -> System.out.println(info.getMessage()));
+    });
+}
+```
+
+By default Teki collects every error it finds. Pass `true` as the second argument to stop at the first failure:
+
+```java
+signupSchema.validate(request, true);
+```
+
+## Annotation-based validation
+
+If you prefer model-level constraints, add Teki annotations and scan the class:
+
+```java
+import dev.ditsche.teki.Teki;
+import dev.ditsche.teki.annotation.Email;
+import dev.ditsche.teki.annotation.Required;
+import dev.ditsche.teki.annotation.Size;
+import dev.ditsche.teki.annotation.Trim;
+
+public class SignupRequest {
+    @Required
+    @Email
+    @Trim
+    private String email;
+
+    @Required
+    @Size(min = 8, max = 128)
+    private String password;
+}
+
+Teki.from(SignupRequest.class).validate(request);
+```
+
+Teki caches annotation-scanned schemas by class, so repeated calls to `Teki.from(SignupRequest.class)` reuse the generated validator.

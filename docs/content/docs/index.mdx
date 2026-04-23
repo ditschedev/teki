@@ -1,0 +1,74 @@
+---
+title: Introduction
+description: Teki is a fluent Java schema validator inspired by Zod and Yup.
+---
+
+Teki helps you describe the shape of Java objects and validate them with a small, fluent API. It is designed for teams that like the ergonomics of JavaScript validators such as Zod or Yup, but want that style inside a Java codebase.
+
+You can define schemas in code, scan validation annotations from model classes, validate nested objects and arrays, normalize values with rules such as `trim()` and `defaultValue(...)`, and collect structured field errors when validation fails.
+
+## What Teki is for
+
+- Validating request DTOs, config objects, command payloads, and JSON-mapped Java classes
+- Keeping validation close to the data it protects
+- Building reusable schemas with a fluent builder
+- Using annotations when the model class should carry its own constraints
+- Returning structured errors by field name instead of one opaque message
+
+## Two ways to define validation
+
+Use the builder API when you want schemas that read like code:
+
+```java
+import dev.ditsche.teki.Teki;
+
+import static dev.ditsche.teki.rule.builder.Rules.*;
+
+Teki userSchema = Teki.fromRules(
+    string("email").required().email().trim(),
+    string("displayName").required().min(2).max(80),
+    number("age").min(13)
+);
+```
+
+Use annotations when the constraints naturally belong on the class:
+
+```java
+import dev.ditsche.teki.annotation.Email;
+import dev.ditsche.teki.annotation.Required;
+import dev.ditsche.teki.annotation.Trim;
+
+public class SignupRequest {
+    @Required
+    @Email
+    @Trim
+    private String email;
+}
+
+Teki.from(SignupRequest.class).validate(request);
+```
+
+## Where to go next
+
+<Cards>
+  <Card
+    title="Getting Started"
+    href="/docs/getting-started"
+    description="Install Teki and validate your first Java object."
+  />
+  <Card
+    title="Schemas"
+    href="/docs/schemas"
+    description="Build reusable validators with the fluent rule API."
+  />
+  <Card
+    title="Annotations"
+    href="/docs/annotations"
+    description="Scan constraints directly from model classes."
+  />
+  <Card
+    title="Rules"
+    href="/docs/rules"
+    description="Browse every built-in builder and validation rule."
+  />
+</Cards>

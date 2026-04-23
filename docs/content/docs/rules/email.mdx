@@ -1,0 +1,29 @@
+---
+title: Email
+description: Validate email addresses.
+---
+
+Use `email()` on string fields.
+
+```java
+Teki schema = Teki.fromRules(
+    string("email").required().email().trim()
+);
+```
+
+## Available on
+
+- `string(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.Email;
+
+public class SignupRequest {
+    @Email
+    private String email;
+}
+```
+
+Pair `email()` with `required()` when the email field must be present.

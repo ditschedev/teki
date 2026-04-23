@@ -1,0 +1,27 @@
+---
+title: Credit Card
+description: Validate credit card number strings.
+---
+
+Use `creditCard()` on string fields.
+
+```java
+Teki schema = Teki.fromRules(
+    string("cardNumber").required().creditCard()
+);
+```
+
+## Available on
+
+- `string(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.CreditCard;
+
+public class PaymentRequest {
+    @CreditCard
+    private String cardNumber;
+}
+```

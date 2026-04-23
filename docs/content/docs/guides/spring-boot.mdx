@@ -1,0 +1,218 @@
+---
+title: Spring Boot Integration
+description: Integrate Teki into a Spring Boot application with controller advice and automatic validation.
+---
+
+This guide covers three things: adding Teki to a Spring Boot project, translating `ValidationException` into a structured HTTP response using `@RestControllerAdvice`, and optionally triggering validation automatically via AOP so controllers stay free of boilerplate.
+
+## Dependencies
+
+Add Teki alongside your Spring Boot starter. If you want automatic validation via AOP, include `spring-boot-starter-aop` as well.
+
+```xml title="pom.xml"
+<dependency>
+  <groupId>dev.ditsche</groupId>
+  <artifactId>teki</artifactId>
+  <version>3.0.0</version>
+</dependency>
+
+<!-- Only needed for automatic AOP-based validation -->
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-aop</artifactId>
+</dependency>
+```
+
+## Annotating your DTO
+
+The simplest approach in Spring Boot is to put validation rules directly on the DTO using Teki annotations. `Teki.from(Class)` scans them once and caches the result.
+
+```java
+import dev.ditsche.teki.annotation.*;
+
+public class SignupRequest {
+
+    @Required
+    @Email
+    @Trim
+    private String email;
+
+    @Required
+    @Size(min = 8, max = 128)
+    private String password;
+
+    @Required
+    private Integer age;
+
+    // getters
+}
+```
+
+You can also define a schema with the fluent API and expose it as a `@Bean` when you prefer to keep rules separate from the DTO.
+
+```java
+@Configuration
+public class ValidationConfig {
+
+    @Bean
+    public Teki signupSchema() {
+        return Teki.fromRules(
+            string("email").required().email().trim(),
+            string("password").required().min(8).max(128),
+            number("age").required()
+        );
+    }
+}
+```
+
+## Manual validation in a controller
+
+Call `validate(...)` directly in the controller method. `ValidationException` propagates to the exception handler described in the next section.
+
+```java
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
+
+    @PostMapping("/signup")
+    public ResponseEntity<Void> signup(@RequestBody SignupRequest request) {
+        Teki.from(SignupRequest.class).validate(request);
+
+        // proceed with a valid request
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+}
+```
+
+When using a fluent schema bean, inject it instead:
+
+```java
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
+
+    private final Teki signupSchema;
+
+    public AuthController(Teki signupSchema) {
+        this.signupSchema = signupSchema;
+    }
+
+    @PostMapping("/signup")
+    public ResponseEntity<Void> signup(@RequestBody SignupRequest request) {
+        signupSchema.validate(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+}
+```
+
+## Handling errors with @RestControllerAdvice
+
+Add a `@RestControllerAdvice` to catch `ValidationException` and map it to a structured JSON response. The handler below returns HTTP 422 with a map of field names to their error messages.
+
+```java
+import dev.ditsche.teki.error.ValidationException;
+import dev.ditsche.teki.error.ValidationError;
+import dev.ditsche.teki.error.ValidationErrorInfo;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+@RestControllerAdvice
+public class TekiExceptionHandler {
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<Map<String, Object>> handleValidation(ValidationException ex) {
+        Map<String, List<String>> errors = new LinkedHashMap<>();
+
+        for (ValidationError error : ex.getErrors()) {
+            List<String> messages = error.getErrors().stream()
+                .map(ValidationErrorInfo::getMessage)
+                .toList();
+            errors.put(error.getField(), messages);
+        }
+
+        return ResponseEntity
+            .status(HttpStatus.UNPROCESSABLE_ENTITY)
+            .body(Map.of("errors", errors));
+    }
+}
+```
+
+A failed signup produces a response like:
+
+```json
+{
+  "errors": {
+    "email": ["The field \"email\" must be a valid email address"],
+    "password": ["The field \"password\" must be at least 8 characters long"]
+  }
+}
+```
+
+## Automatic validation with AOP
+
+If you want validation to happen automatically without calling `validate(...)` by hand in each controller method, you can use an aspect. This requires annotation-based DTOs because the aspect uses `Teki.from(arg.getClass())` to resolve the schema.
+
+Define a marker annotation for methods that should trigger validation:
+
+```java
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface TekiValidated {}
+```
+
+Implement the aspect. It runs before the method and validates every non-null argument:
+
+```java
+import dev.ditsche.teki.Teki;
+
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class TekiValidationAspect {
+
+    @Before("@annotation(TekiValidated)")
+    public void validate(JoinPoint joinPoint) {
+        for (Object arg : joinPoint.getArgs()) {
+            if (arg != null) {
+                Teki.from(arg.getClass()).validate(arg);
+            }
+        }
+    }
+}
+```
+
+Annotate controller methods with `@TekiValidated`. The `ValidationException` is still caught by the controller advice.
+
+```java
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
+
+    @PostMapping("/signup")
+    @TekiValidated
+    public ResponseEntity<Void> signup(@RequestBody SignupRequest request) {
+        // request has already been validated
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+}
+```
+
+<Callout>
+The aspect validates all non-null method arguments. If a controller method accepts multiple parameters such as a path variable and a request body, both are passed to `Teki.from(...)`. Classes without Teki annotations produce an empty schema and pass silently, so there is no need to filter arguments manually.
+</Callout>

@@ -1,0 +1,167 @@
+---
+title: Testing Schemas
+description: Write focused unit tests for Teki validation schemas using JUnit 5 and AssertJ.
+---
+
+Teki schemas are plain objects with no framework dependencies, which makes them straightforward to test. Use `check(...)` in tests rather than `validate(...)` — it never throws, so you can assert on the outcome directly without wrapping every call in a try/catch.
+
+## Setup
+
+Add JUnit 5 and AssertJ to your test dependencies if they are not already present:
+
+```xml title="pom.xml"
+<dependency>
+  <groupId>org.junit.jupiter</groupId>
+  <artifactId>junit-jupiter</artifactId>
+  <scope>test</scope>
+</dependency>
+<dependency>
+  <groupId>org.assertj</groupId>
+  <artifactId>assertj-core</artifactId>
+  <scope>test</scope>
+</dependency>
+```
+
+## Testing valid input
+
+Assert that `check(...)` reports a valid outcome for inputs that should pass:
+
+```java
+class SignupSchemaTest {
+
+    private final Teki schema = Teki.fromRules(
+        string("email").required().email().trim(),
+        string("password").required().min(8),
+        number("age").required().min(13)
+    );
+
+    @Test
+    void acceptsValidInput() {
+        SignupRequest request = new SignupRequest("user@example.com", "s3cr3tpassword", 25);
+
+        assertThat(schema.check(request).isValid()).isTrue();
+    }
+}
+```
+
+## Testing invalid input
+
+Assert that `check(...)` reports an invalid outcome and that the expected field is in the error bag:
+
+```java
+@Test
+void rejectsInvalidEmail() {
+    SignupRequest request = new SignupRequest("not-an-email", "s3cr3tpassword", 25);
+
+    ValidationOutcome<SignupRequest> outcome = schema.check(request);
+
+    assertThat(outcome.isValid()).isFalse();
+    assertThat(outcome.getErrors())
+        .anyMatch(e -> e.getField().equals("email"));
+}
+
+@Test
+void rejectsPasswordTooShort() {
+    SignupRequest request = new SignupRequest("user@example.com", "short", 25);
+
+    ValidationOutcome<SignupRequest> outcome = schema.check(request);
+
+    assertThat(outcome.isValid()).isFalse();
+    assertThat(outcome.getErrors())
+        .anyMatch(e -> e.getField().equals("password"));
+}
+```
+
+## Testing error types
+
+Each error carries a stable `type` string. Assert on the type when you want to verify which rule triggered, not just which field failed:
+
+```java
+@Test
+void emailErrorHasCorrectType() {
+    SignupRequest request = new SignupRequest("not-an-email", "s3cr3tpassword", 25);
+
+    ValidationOutcome<SignupRequest> outcome = schema.check(request);
+
+    assertThat(outcome.getErrors())
+        .flatMap(e -> e.getErrors())
+        .anyMatch(info -> info.getType().equals("validation.error.email"));
+}
+```
+
+## Testing value normalization
+
+Rules like `trim()` and `defaultValue(...)` modify the validated object. Assert on the value returned by `check(...)`, not the original input object:
+
+```java
+@Test
+void trimsEmailWhitespace() {
+    SignupRequest request = new SignupRequest("  user@example.com  ", "s3cr3tpassword", 25);
+
+    SignupRequest result = schema.check(request).getValue();
+
+    assertThat(result.getEmail()).isEqualTo("user@example.com");
+}
+
+@Test
+void appliesDefaultRole() {
+    Teki roleSchema = Teki.fromRules(
+        string("role").defaultValue("user")
+    );
+    ProfileRequest request = new ProfileRequest(null);
+
+    ProfileRequest result = roleSchema.check(request).getValue();
+
+    assertThat(result.getRole()).isEqualTo("user");
+}
+```
+
+## Testing conditional validation
+
+For schemas that use `when(...)`, test both branches — when the condition holds and when it does not:
+
+```java
+private final Teki guardianSchema = Teki.fromRules(
+    number("age").required(),
+    string("parentName").optional()
+)
+.when(
+    p -> p.getAge() < 18,
+    string("parentName").required()
+);
+
+@Test
+void requiresParentNameWhenUnder18() {
+    PersonRequest request = new PersonRequest(16, null);
+
+    ValidationOutcome<PersonRequest> outcome = guardianSchema.check(request);
+
+    assertThat(outcome.isValid()).isFalse();
+    assertThat(outcome.getErrors())
+        .anyMatch(e -> e.getField().equals("parentName"));
+}
+
+@Test
+void doesNotRequireParentNameWhenAdult() {
+    PersonRequest request = new PersonRequest(25, null);
+
+    assertThat(guardianSchema.check(request).isValid()).isTrue();
+}
+```
+
+## Testing annotation-based schemas
+
+`Teki.from(Class)` works the same way in tests. Because it caches by class, you can call it directly without creating a schema field:
+
+```java
+@Test
+void rejectsMissingEmailOnSignupRequest() {
+    SignupRequest request = new SignupRequest(null, "s3cr3tpassword", 25);
+
+    ValidationOutcome<SignupRequest> outcome = Teki.from(SignupRequest.class).check(request);
+
+    assertThat(outcome.isValid()).isFalse();
+    assertThat(outcome.getErrors())
+        .anyMatch(e -> e.getField().equals("email"));
+}
+```

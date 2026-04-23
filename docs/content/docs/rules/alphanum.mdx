@@ -1,0 +1,27 @@
+---
+title: Alphanumeric
+description: Allow only letters and digits.
+---
+
+Use `alphanum()` when a string should contain only alphanumeric characters.
+
+```java
+Teki schema = Teki.fromRules(
+    string("username").required().alphanum().min(3).max(24)
+);
+```
+
+## Available on
+
+- `string(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.AlphaNumeric;
+
+public class SignupRequest {
+    @AlphaNumeric
+    private String username;
+}
+```

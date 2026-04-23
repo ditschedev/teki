@@ -1,0 +1,74 @@
+---
+title: Custom Rules
+description: Extend Teki with project-specific validation and normalization rules.
+---
+
+Implement `Rule` when the built-in rules do not describe your domain.
+
+```java
+import dev.ditsche.teki.rule.Rule;
+import dev.ditsche.teki.rule.RuleResult;
+
+public class StartsWithRule implements Rule {
+    private final String prefix;
+
+    public StartsWithRule(String prefix) {
+        this.prefix = prefix;
+    }
+
+    @Override
+    public RuleResult test(Object value) {
+        if (value == null) return RuleResult.resolve();
+        return RuleResult.passes(value.toString().startsWith(prefix));
+    }
+
+    @Override
+    public String message(String field) {
+        return field + " must start with " + prefix;
+    }
+
+    @Override
+    public String getType() {
+        return RULE_TYPE_PREFIX + "starts_with";
+    }
+}
+```
+
+Attach the rule with `custom(...)`:
+
+```java
+import dev.ditsche.teki.Teki;
+
+import static dev.ditsche.teki.rule.builder.Rules.*;
+
+Teki schema = Teki.fromRules(
+    string("ticketId").required().custom(new StartsWithRule("TKT-"))
+);
+```
+
+## Rule results
+
+Use the helpers on `RuleResult` to describe the outcome:
+
+| Helper                       | Use it when                                   |
+| ---------------------------- | --------------------------------------------- |
+| `RuleResult.passes(boolean)` | The rule only accepts or rejects              |
+| `RuleResult.resolve()`       | The value is valid and unchanged              |
+| `RuleResult.resolve(value)`  | The value is valid and should be written back |
+| `RuleResult.reject()`        | The value is invalid                          |
+
+## Normalizing in custom rules
+
+Rules can transform values by returning `RuleResult.resolve(newValue)`.
+
+```java
+public RuleResult test(Object value) {
+    if (value instanceof String text) {
+        return RuleResult.resolve(text.strip().toLowerCase());
+    }
+
+    return RuleResult.resolve();
+}
+```
+
+When Teki sees a changed result, it writes the new value back to the validated field.

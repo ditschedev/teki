@@ -1,0 +1,32 @@
+---
+title: Max
+description: Require a maximum value, length, or size.
+---
+
+Use `max(...)` to enforce an upper bound.
+
+```java
+Teki schema = Teki.fromRules(
+    string("username").max(24),
+    number("score").max(100),
+    array("tags").max(10)
+);
+```
+
+## Available on
+
+- `string(...)`
+- `number(...)`
+- `array(...)`
+- `elements()`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.Max;
+
+public class ReviewRequest {
+    @Max(500)
+    private String comment;
+}
+```

@@ -1,0 +1,27 @@
+---
+title: Future or Present
+description: Require a date or time in the future or equal to now.
+---
+
+Use `futureOrPresent()` on temporal fields to allow dates from now onward.
+
+```java
+Teki schema = Teki.fromRules(
+    temporal("startsAt").required().futureOrPresent()
+);
+```
+
+## Available on
+
+- `temporal(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.FutureOrPresent;
+
+public class EventRequest {
+    @FutureOrPresent
+    private ZonedDateTime startsAt;
+}
+```

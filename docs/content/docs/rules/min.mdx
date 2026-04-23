@@ -1,0 +1,32 @@
+---
+title: Min
+description: Require a minimum value, length, or size.
+---
+
+Use `min(...)` to enforce a lower bound.
+
+```java
+Teki schema = Teki.fromRules(
+    string("username").min(3),
+    number("age").min(13),
+    array("tags").min(1)
+);
+```
+
+## Available on
+
+- `string(...)`
+- `number(...)`
+- `array(...)`
+- `elements()`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.Min;
+
+public class SignupRequest {
+    @Min(13)
+    private Integer age;
+}
+```

@@ -1,0 +1,34 @@
+---
+title: Number
+description: Validate numeric fields with range, length, and default rules.
+---
+
+Use `number("field")` for fields that must be numeric.
+
+```java
+Teki schema = Teki.fromRules(
+    number("age").required().min(13),
+    number("score").min(0).max(100),
+    number("retries").defaultValue(0)
+);
+```
+
+## Available methods
+
+| Method                 | Purpose                         |
+| ---------------------- | ------------------------------- |
+| `required()`           | Reject missing values           |
+| `min(long)`            | Require a minimum value         |
+| `max(long)`            | Require a maximum value         |
+| `size(long, long)`     | Require a value range           |
+| `length(int)`          | Require an exact numeric length |
+| `positive()`           | Require a value > zero          |
+| `positiveOrZero()`     | Require a value ≥ zero          |
+| `negative()`           | Require a value < zero          |
+| `negativeOrZero()`     | Require a value ≤ zero          |
+| `defaultValue(Number)` | Fill a missing value            |
+| `custom(Rule)`         | Attach a custom rule            |
+
+## Annotation equivalent
+
+Numeric fields can use `@Required`, `@Min`, `@Max`, `@Size`, `@Length`, `@Default`, `@Positive`, `@PositiveOrZero`, `@Negative`, and `@NegativeOrZero`.

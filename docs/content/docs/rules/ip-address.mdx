@@ -1,0 +1,27 @@
+---
+title: IP Address
+description: Validate IP address strings.
+---
+
+Use `ip()` on string fields.
+
+```java
+Teki schema = Teki.fromRules(
+    string("clientIp").ip()
+);
+```
+
+## Available on
+
+- `string(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.IpAddress;
+
+public class AuditEvent {
+    @IpAddress
+    private String clientIp;
+}
+```

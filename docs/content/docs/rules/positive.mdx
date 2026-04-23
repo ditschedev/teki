@@ -1,0 +1,42 @@
+---
+title: Positive
+description: Require a number strictly greater than zero.
+---
+
+Use `positive()` on number fields to reject zero and negative values.
+
+```java
+Teki schema = Teki.fromRules(
+    number("quantity").required().positive(),
+    number("price").required().positive()
+);
+```
+
+Use `positiveOrZero()` to allow zero as well.
+
+```java
+Teki schema = Teki.fromRules(
+    number("score").positiveOrZero()
+);
+```
+
+Both methods work with `int`, `long`, `double`, `float`, `BigDecimal`, and their boxed equivalents.
+
+## Available on
+
+- `number(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.Positive;
+import dev.ditsche.teki.annotation.PositiveOrZero;
+
+public class OrderRequest {
+    @Positive
+    private int quantity;
+
+    @PositiveOrZero
+    private double discount;
+}
+```

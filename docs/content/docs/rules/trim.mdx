@@ -1,0 +1,31 @@
+---
+title: Trim
+description: Normalize string values by trimming surrounding whitespace.
+---
+
+Use `trim()` to remove surrounding whitespace from a string value.
+
+```java
+Teki schema = Teki.fromRules(
+    string("email").required().email().trim()
+);
+
+schema.validate(request);
+```
+
+If validation succeeds, Teki writes the trimmed value back to the field.
+
+## Available on
+
+- `string(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.Trim;
+
+public class SignupRequest {
+    @Trim
+    private String email;
+}
+```

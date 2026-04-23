@@ -1,0 +1,33 @@
+---
+title: Object
+description: Validate nested objects with child field rules.
+---
+
+Use `object("field")` for nested Java objects.
+
+```java
+Teki schema = Teki.fromRules(
+    object("customer").fields(
+        string("email").required().email(),
+        string("name").required().min(2)
+    )
+);
+```
+
+## Available methods
+
+| Method               | Purpose                                    |
+| -------------------- | ------------------------------------------ |
+| `fields(Builder...)` | Add multiple child rules                   |
+| `child(Builder)`     | Add one child rule                         |
+| `child(Validatable)` | Add one prebuilt child validator           |
+| `optional()`         | Skip validation when the object is missing |
+
+## Error paths
+
+Nested validation errors use dotted field paths:
+
+```text
+customer.email
+customer.name
+```

@@ -1,0 +1,22 @@
+package dev.ditsche.teki.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * Declares the @OneOf validation annotation.
+ *
+ * @author Tobias Dittmann
+ */
+@Target({ElementType.FIELD, ElementType.TYPE_USE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface OneOf {
+  /**
+   * The set of allowed values.
+   *
+   * @return allowed values
+   */
+  String[] value();
+}

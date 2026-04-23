@@ -1,0 +1,41 @@
+---
+title: String
+description: Validate text fields and chain string-specific constraints.
+---
+
+Use `string("field")` for fields that must be strings.
+
+```java
+Teki schema = Teki.fromRules(
+    string("email").required().email().trim(),
+    string("username").alphanum().min(3).max(24),
+    string("website").optional().url()
+);
+```
+
+## Available methods
+
+| Method                 | Purpose                                   |
+| ---------------------- | ----------------------------------------- |
+| `required()`           | Reject missing values                     |
+| `optional()`           | Skip validation when the value is missing |
+| `email()`              | Validate email addresses                  |
+| `url()`                | Validate URLs                             |
+| `pattern(String)`      | Validate with a regular expression        |
+| `alphanum()`           | Allow only letters and digits             |
+| `ip()`                 | Validate IP addresses                     |
+| `creditCard()`         | Validate credit card numbers              |
+| `min(int)`             | Require a minimum length                  |
+| `max(int)`             | Require a maximum length                  |
+| `between(int, int)`    | Require a length range                    |
+| `length(int)`          | Require an exact length                   |
+| `trim()`               | Trim surrounding whitespace               |
+| `uuid()`               | Validate UUID format                      |
+| `notBlank()`           | Reject null and whitespace-only strings   |
+| `oneOf(String...)`     | Require the value to be in a fixed set    |
+| `defaultValue(String)` | Fill a missing value                      |
+| `custom(Rule)`         | Attach a custom rule                      |
+
+## Annotation equivalent
+
+String fields can use annotations such as `@Required`, `@Email`, `@Url`, `@Pattern`, `@Size`, `@Trim`, `@Default`, `@Uuid`, `@NotBlank`, and `@OneOf`.

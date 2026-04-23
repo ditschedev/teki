@@ -1,0 +1,27 @@
+---
+title: Past or Present
+description: Require a date or time in the past or equal to now.
+---
+
+Use `pastOrPresent()` on temporal fields to allow dates up to and including the current instant.
+
+```java
+Teki schema = Teki.fromRules(
+    temporal("verifiedAt").required().pastOrPresent()
+);
+```
+
+## Available on
+
+- `temporal(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.PastOrPresent;
+
+public class VerificationRequest {
+    @PastOrPresent
+    private Instant verifiedAt;
+}
+```
