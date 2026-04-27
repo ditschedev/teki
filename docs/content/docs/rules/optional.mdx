@@ -24,3 +24,20 @@ Teki schema = Teki.fromRules(
 ## Annotation behavior
 
 When using `Teki.from(Class<?>)`, fields without `@Required` are treated as optional automatically.
+
+## Annotation equivalent
+
+Use `@Optional` to make the intent explicit when no other presence annotation is present.
+Fields without `@Required` are already optional by default, but `@Optional` documents that
+this is deliberate.
+
+```java
+public class UserForm {
+    @Required
+    String username;
+
+    @Optional
+    @Email
+    String email; // optional, but validated as email if present
+}
+```
