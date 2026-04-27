@@ -1,9 +1,12 @@
 ---
-title: Introduction
+title: What is Teki?
 description: Teki is a fluent Java schema validator inspired by Zod and Yup.
+icon: CircleQuestionMark
 ---
 
-Teki helps you describe the shape of Java objects and validate them with a small, fluent API. It is designed for teams that like the ergonomics of JavaScript validators such as Zod or Yup, but want that style inside a Java codebase.
+import { Rocket, Braces, Tag, ShieldCheck } from "lucide-react";
+
+Teki helps you describe the shape of Java objects and validate them with a small, fluent API. It is designed for teams that like the ergonomics of JavaScript validators such as [Zod](https://zod.dev/) or [Yup](https://github.com/jquense/yup), but want that style inside a Java codebase.
 
 You can define schemas in code, scan validation annotations from model classes, validate nested objects and arrays, normalize values with rules such as `trim()` and `defaultValue(...)`, and collect structured field errors when validation fails.
 
@@ -54,21 +57,25 @@ Teki.from(SignupRequest.class).validate(request);
   <Card
     title="Getting Started"
     href="/docs/getting-started"
+    icon={<Rocket />}
     description="Install Teki and validate your first Java object."
   />
   <Card
     title="Schemas"
     href="/docs/schemas"
+    icon={<Braces />}
     description="Build reusable validators with the fluent rule API."
   />
   <Card
     title="Annotations"
     href="/docs/annotations"
+    icon={<Tag />}
     description="Scan constraints directly from model classes."
   />
   <Card
     title="Rules"
     href="/docs/rules"
+    icon={<ShieldCheck />}
     description="Browse every built-in builder and validation rule."
   />
 </Cards>

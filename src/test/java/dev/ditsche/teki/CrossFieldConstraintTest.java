@@ -36,6 +36,7 @@ class CrossFieldConstraintTest {
             .constraint(
                 (PasswordForm f) -> f.password.equals(f.confirmPassword),
                 "confirmPassword",
+                "validation.error.password.mismatch",
                 "Passwords must match");
 
     PasswordForm form = new PasswordForm("secret", "secret");
@@ -49,6 +50,7 @@ class CrossFieldConstraintTest {
             .constraint(
                 (PasswordForm f) -> f.password.equals(f.confirmPassword),
                 "confirmPassword",
+                "validation.error.password.mismatch",
                 "Passwords must match");
 
     assertThatThrownBy(() -> teki.validate(new PasswordForm("secret", "different")))
@@ -69,6 +71,7 @@ class CrossFieldConstraintTest {
             .constraint(
                 (PasswordForm f) -> f.password != null && f.password.equals(f.confirmPassword),
                 "confirmPassword",
+                "validation.error.password.mismatch",
                 "Passwords must match");
 
     // Both fields null → field error (required) + constraint error
@@ -85,6 +88,7 @@ class CrossFieldConstraintTest {
             .constraint(
                 (ShippingForm f) -> !"separate".equals(f.shippingMode) || f.billingAddress != null,
                 "billingAddress",
+                "validation.error.shipping.billing_address_required",
                 "Billing address is required when shipping mode is 'separate'");
 
     assertThat(teki.validate(new ShippingForm("same", null))).isNotNull();
@@ -99,10 +103,12 @@ class CrossFieldConstraintTest {
             .constraint(
                 (PasswordForm f) -> f.password.equals(f.confirmPassword),
                 "confirmPassword",
+                "validation.error.password.mismatch",
                 "Passwords must match")
             .constraint(
                 (PasswordForm f) -> f.password.length() >= 8,
                 "password",
+                "validation.error.password.too_short",
                 "Password must be at least 8 characters");
 
     assertThatThrownBy(() -> teki.validate(new PasswordForm("short", "short")))
@@ -123,6 +129,7 @@ class CrossFieldConstraintTest {
             .constraint(
                 (PasswordForm f) -> f.password.equals(f.confirmPassword),
                 "confirmPassword",
+                "validation.error.password.mismatch",
                 "Passwords must match");
 
     ValidationOutcome<PasswordForm> outcome = teki.check(new PasswordForm("a", "b"));
@@ -134,7 +141,7 @@ class CrossFieldConstraintTest {
   void constraintOnCachedInstanceThrows() {
     Teki cached = Teki.from(PasswordForm.class);
     assertThatThrownBy(
-            () -> cached.constraint((PasswordForm f) -> true, "password", "msg"))
+            () -> cached.constraint((PasswordForm f) -> true, "password", "validation.error.test"))
         .isInstanceOf(IllegalStateException.class);
   }
 }

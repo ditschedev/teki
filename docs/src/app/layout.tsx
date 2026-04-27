@@ -65,7 +65,7 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${inter.className} antialiased`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.className} subpixel-antialiased`} suppressHydrationWarning>
       <body className="flex min-h-dvh flex-col">
         <RootProvider>{children}</RootProvider>
       </body>

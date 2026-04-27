@@ -8,11 +8,13 @@ final class CrossFieldConstraint {
   private final Predicate predicate;
 
   private final String field;
+  private final String type;
   private final String message;
 
-  CrossFieldConstraint(Predicate<?> predicate, String field, String message) {
+  CrossFieldConstraint(Predicate<?> predicate, String field, String type, String message) {
     this.predicate = predicate;
     this.field = field;
+    this.type = type;
     this.message = message;
   }
 
@@ -27,6 +29,10 @@ final class CrossFieldConstraint {
 
   String field() {
     return field;
+  }
+
+  String type() {
+    return type;
   }
 
   String message() {

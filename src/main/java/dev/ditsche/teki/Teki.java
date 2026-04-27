@@ -157,18 +157,33 @@ public final class Teki {
    *
    * @param predicate returns {@code true} when the invariant holds
    * @param field field name to attach the error to when the invariant fails
-   * @param message human-readable error message
+   * @param type stable error type identifier used for i18n
    * @param <T> object type the predicate operates on
    * @return this schema for chaining
    * @throws IllegalStateException when called on a cached instance
    */
-  public <T> Teki constraint(Predicate<T> predicate, String field, String message) {
+  public <T> Teki constraint(Predicate<T> predicate, String field, String type) {
+    return constraint(predicate, field, type, null);
+  }
+
+  /**
+   * Adds a whole-object invariant that is checked after per-field validation.
+   *
+   * @param predicate returns {@code true} when the invariant holds
+   * @param field field name to attach the error to when the invariant fails
+   * @param type stable error type identifier used for i18n
+   * @param message optional human-readable fallback message
+   * @param <T> object type the predicate operates on
+   * @return this schema for chaining
+   * @throws IllegalStateException when called on a cached instance
+   */
+  public <T> Teki constraint(Predicate<T> predicate, String field, String type, String message) {
     if (fromCache) {
       throw new IllegalStateException(
           "Cross-field constraints cannot be added to a schema obtained from Teki.from(). "
               + "Use Teki.fromRules() to build a schema that supports constraints.");
     }
-    this.constraints.add(new CrossFieldConstraint(predicate, field, message));
+    this.constraints.add(new CrossFieldConstraint(predicate, field, type, message));
     return this;
   }
 
@@ -343,7 +358,7 @@ public final class Teki {
 
     for (CrossFieldConstraint constraint : constraints) {
       if (!constraint.test(object)) {
-        errorBag.add(constraint.field(), "validation.error.constraint.cross_field", constraint.message());
+        errorBag.add(constraint.field(), constraint.type(), constraint.message());
         if (abortEarly) return ValidationOutcome.invalid(object, errorBag);
       }
     }

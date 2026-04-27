@@ -102,6 +102,9 @@ export default function HomePage() {
   return (
     <main className="isolate bg-white text-neutral-950 dark:bg-neutral-950 dark:text-white">
       <section className="relative overflow-hidden border-b border-neutral-200 bg-neutral-50 text-neutral-950 dark:border-white/10 dark:bg-neutral-950 dark:text-white">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <div className="absolute inset-0 [background-image:radial-gradient(circle,rgba(0,0,0,0.07)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:linear-gradient(to_bottom,black_40%,transparent)] dark:[background-image:radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)]" />
+        </div>
         <div className="mx-auto max-w-(--fd-layout-width) px-6 py-16 lg:px-10 lg:py-24">
           <div className="grid gap-12 xl:grid-cols-[9fr_11fr] xl:items-center">
             <div className="relative max-w-3xl xl:max-w-none">
@@ -119,20 +122,21 @@ export default function HomePage() {
               <div className="mt-8 flex flex-col gap-2 sm:flex-row">
                 <Link
                   href="/docs/getting-started"
-                  className="inline-flex h-[38px] cursor-pointer items-center justify-center gap-2 rounded-md border border-emerald-800/75 bg-emerald-700 px-4 text-base font-normal text-white outline-0 transition-all duration-200 ease-out hover:border-emerald-900 hover:bg-emerald-800 focus-visible:outline-4 focus-visible:outline-offset-1 focus-visible:outline-emerald-700 sm:text-sm dark:border-emerald-700 dark:bg-emerald-800 dark:hover:border-emerald-600 dark:hover:bg-emerald-900 dark:focus-visible:outline-emerald-600"
+                  className="inline-flex h-9.5 cursor-pointer items-center justify-center gap-2 rounded-md border border-emerald-800/75 bg-emerald-700 px-4 text-base font-normal text-white outline-0 transition-all duration-200 ease-out hover:border-emerald-900 hover:bg-emerald-800 focus-visible:outline-4 focus-visible:outline-offset-1 focus-visible:outline-emerald-700 sm:text-sm dark:border-emerald-700 dark:bg-emerald-800 dark:hover:border-emerald-600 dark:hover:bg-emerald-900 dark:focus-visible:outline-emerald-600"
                   onClick={() =>
                     posthog.capture("docs_cta_clicked", { destination: "/docs/getting-started" })
                   }
                 >
-                  <span className="truncate">Read the docs</span>
+                  <span className="truncate font-medium">Read the docs</span>
                   <ArrowRight className="size-4" />
                 </Link>
                 <Link
                   href="https://github.com/ditschedev/teki"
-                  className="inline-flex h-[38px] cursor-pointer items-center justify-center rounded-md border border-neutral-300 bg-white px-4 text-base font-normal text-neutral-950 outline-0 transition-all duration-200 ease-out hover:border-neutral-400 hover:bg-neutral-100 focus-visible:outline-4 focus-visible:outline-offset-1 focus-visible:outline-emerald-700 sm:text-sm dark:border-white/15 dark:bg-white/10 dark:text-white dark:hover:border-white/25 dark:hover:bg-white/15 dark:focus-visible:outline-emerald-500"
+                  target="_blank"
+                  className="inline-flex h-9.5 cursor-pointer items-center justify-center rounded-md border border-neutral-300 bg-white px-4 text-base font-normal text-neutral-950 outline-0 transition-all duration-200 ease-out hover:border-neutral-400 hover:bg-neutral-100 focus-visible:outline-4 focus-visible:outline-offset-1 focus-visible:outline-emerald-700 sm:text-sm dark:border-white/15 dark:bg-white/10 dark:text-white dark:hover:border-white/25 dark:hover:bg-white/15 dark:focus-visible:outline-emerald-500"
                   onClick={() => posthog.capture("github_link_clicked", { location: "hero" })}
                 >
-                  <span className="truncate">View on GitHub</span>
+                  <span className="truncate font-medium">View on GitHub</span>
                 </Link>
               </div>
 

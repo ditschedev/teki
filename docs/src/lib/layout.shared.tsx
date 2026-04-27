@@ -24,7 +24,6 @@ function NavTitle() {
 export function baseOptions(): BaseLayoutProps {
   return {
     nav: {
-      // JSX supported
       title: <NavTitle />,
     },
     githubUrl: `https://github.com/${gitConfig.user}/${gitConfig.repo}`,
