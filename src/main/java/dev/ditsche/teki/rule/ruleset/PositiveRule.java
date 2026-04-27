@@ -27,6 +27,6 @@ public final class PositiveRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "number.positive";
+    return "number.positive";
   }
 }

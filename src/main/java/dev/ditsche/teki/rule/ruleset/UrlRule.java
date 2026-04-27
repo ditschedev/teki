@@ -32,6 +32,6 @@ public final class UrlRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "format.url";
+    return "format.url";
   }
 }

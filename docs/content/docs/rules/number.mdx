@@ -15,19 +15,20 @@ Teki schema = Teki.fromRules(
 
 ## Available methods
 
-| Method                 | Purpose                         |
-| ---------------------- | ------------------------------- |
-| `required()`           | Reject missing values           |
-| `min(long)`            | Require a minimum value         |
-| `max(long)`            | Require a maximum value         |
-| `size(long, long)`     | Require a value range           |
-| `length(int)`          | Require an exact numeric length |
-| `positive()`           | Require a value > zero          |
-| `positiveOrZero()`     | Require a value ≥ zero          |
-| `negative()`           | Require a value < zero          |
-| `negativeOrZero()`     | Require a value ≤ zero          |
-| `defaultValue(Number)` | Fill a missing value            |
-| `custom(Rule)`         | Attach a custom rule            |
+| Method                   | Purpose                                   |
+| ------------------------ | ----------------------------------------- |
+| `required()`             | Reject missing values                     |
+| `optional()`             | Skip validation when the value is missing |
+| `min(long)`              | Require a minimum value                   |
+| `max(long)`              | Require a maximum value                   |
+| `between(long, long)`    | Require a value range                     |
+| `length(int)`            | Require an exact numeric length           |
+| `positive()`             | Require a value > zero                    |
+| `positiveOrZero()`       | Require a value ≥ zero                    |
+| `negative()`             | Require a value < zero                    |
+| `negativeOrZero()`       | Require a value ≤ zero                    |
+| `defaultValue(Number)`   | Fill a missing value                      |
+| `custom(Rule)`           | Attach a custom rule                      |
 
 ## Annotation equivalent
 

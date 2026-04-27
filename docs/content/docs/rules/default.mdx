@@ -16,6 +16,8 @@ schema.validate(request);
 
 After validation, Teki writes the default value back to the validated object when needed.
 
+`defaultValue` triggers on `null` and on blank strings. It does **not** replace numeric zero — `0` is treated as a valid value.
+
 ## Available on
 
 - `string(...)`

@@ -26,7 +26,7 @@ public final class MaxRule implements Rule {
 
   @Override
   public RuleResult test(Object value) {
-    if (value == null) return RuleResult.resolve();
+    if (value == null) return RuleResult.reject();
     if (value instanceof String) return RuleResult.passes(((String) value).length() <= max);
     if (value instanceof Collection)
       return RuleResult.passes(((Collection<?>) value).size() <= max);
@@ -53,6 +53,6 @@ public final class MaxRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "size.max";
+    return "size.max";
   }
 }

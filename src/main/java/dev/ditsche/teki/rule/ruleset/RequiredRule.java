@@ -40,6 +40,6 @@ public final class RequiredRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "format.required";
+    return "format.required";
   }
 }

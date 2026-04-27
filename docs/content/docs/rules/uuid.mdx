@@ -11,7 +11,16 @@ Teki schema = Teki.fromRules(
 );
 ```
 
-All standard UUID formats are accepted regardless of case.
+All standard UUID formats are accepted regardless of case. Parsing is done via `java.util.UUID.fromString()`.
+
+## Version-specific validation
+
+Pass the required version number to restrict to a specific UUID version (1–5).
+
+```java
+string("id").required().uuid(4)  // UUID v4 (random) only
+string("id").required().uuid(1)  // UUID v1 (time-based) only
+```
 
 ## Available on
 
@@ -26,5 +35,9 @@ public class ResourceRequest {
     @Required
     @Uuid
     private String id;
+
+    @Required
+    @Uuid(version = 4)
+    private String traceId;
 }
 ```

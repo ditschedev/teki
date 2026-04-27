@@ -26,6 +26,6 @@ public final class FutureRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "temporal.future";
+    return "temporal.future";
   }
 }

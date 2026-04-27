@@ -26,6 +26,6 @@ public final class FutureOrPresentRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "temporal.future_or_present";
+    return "temporal.future_or_present";
   }
 }

@@ -12,4 +12,8 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.FIELD, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Uuid {}
+public @interface Uuid {
+
+  /** Required UUID version (1–5). Use 0 to accept any version (default). */
+  int version() default 0;
+}

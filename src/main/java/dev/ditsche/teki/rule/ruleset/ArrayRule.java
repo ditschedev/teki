@@ -27,6 +27,6 @@ public final class ArrayRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "type.array";
+    return "type.array";
   }
 }

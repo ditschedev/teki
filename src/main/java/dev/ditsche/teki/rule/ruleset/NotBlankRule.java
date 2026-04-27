@@ -24,6 +24,6 @@ public final class NotBlankRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "string.not_blank";
+    return "string.not_blank";
   }
 }

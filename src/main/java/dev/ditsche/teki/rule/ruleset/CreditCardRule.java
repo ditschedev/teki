@@ -31,6 +31,6 @@ public final class CreditCardRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "format.creditcard";
+    return "format.creditcard";
   }
 }

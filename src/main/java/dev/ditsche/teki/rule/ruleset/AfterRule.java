@@ -37,6 +37,6 @@ public final class AfterRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "temporal.after";
+    return "temporal.after";
   }
 }

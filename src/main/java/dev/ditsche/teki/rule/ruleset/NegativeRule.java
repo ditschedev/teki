@@ -27,6 +27,6 @@ public final class NegativeRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "number.negative";
+    return "number.negative";
   }
 }

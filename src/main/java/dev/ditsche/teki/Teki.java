@@ -27,6 +27,7 @@ public final class Teki {
   private final List<CrossFieldConstraint> constraints;
   private final List<ConditionalValidation> conditionals;
   private boolean fromCache;
+  private MessageResolver messageResolver;
 
   private Teki() {
     this.fields = new ArrayList<>();
@@ -93,6 +94,25 @@ public final class Teki {
           teki.fromCache = true;
           return teki;
         });
+  }
+
+  // -------------------------------------------------------------------------
+  // Message resolver
+  // -------------------------------------------------------------------------
+
+  /**
+   * Registers a message resolver that overrides built-in validation messages.
+   *
+   * <p>The resolver is called with the field name and the stable error type key
+   * (e.g. {@code "validation.error.format.email"}). Return {@code null} to fall back to the
+   * rule's built-in message for that entry.
+   *
+   * @param resolver message resolver to use
+   * @return this schema for chaining
+   */
+  public Teki messages(MessageResolver resolver) {
+    this.messageResolver = resolver;
+    return this;
   }
 
   // -------------------------------------------------------------------------
@@ -310,7 +330,7 @@ public final class Teki {
       Object value = FieldAccess.read(object, field);
       ValidationResult result;
       try {
-        result = validatable.validate("", value, abortEarly);
+        result = validatable.validate("", value, abortEarly, messageResolver);
       } catch (ValidationException e) {
         // abortEarly=true causes field-level validators to throw instead of returning errors.
         // Catch and convert so check() never throws — that is validate()'s job via orElseThrow().
@@ -337,7 +357,7 @@ public final class Teki {
           Object value = FieldAccess.read(object, field);
           ValidationResult result;
           try {
-            result = validatable.validate("", value, abortEarly);
+            result = validatable.validate("", value, abortEarly, messageResolver);
           } catch (ValidationException e) {
             for (var error : e.getErrors()) errorBag.add(error);
             return ValidationOutcome.invalid(object, errorBag);
@@ -358,7 +378,9 @@ public final class Teki {
 
     for (CrossFieldConstraint constraint : constraints) {
       if (!constraint.test(object)) {
-        errorBag.add(constraint.field(), constraint.type(), constraint.message());
+        String msg = messageResolver != null ? messageResolver.resolve(constraint.field(), constraint.type()) : null;
+        if (msg == null) msg = constraint.message();
+        errorBag.add(constraint.field(), constraint.type(), msg);
         if (abortEarly) return ValidationOutcome.invalid(object, errorBag);
       }
     }

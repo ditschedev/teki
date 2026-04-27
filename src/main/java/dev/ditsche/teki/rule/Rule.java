@@ -7,9 +7,6 @@ package dev.ditsche.teki.rule;
  */
 public interface Rule {
 
-  /** Prefix used for built-in validation error type identifiers. */
-  String RULE_TYPE_PREFIX = "validation.error.";
-
   /**
    * Tests whether the supplied value satisfies this rule.
    *

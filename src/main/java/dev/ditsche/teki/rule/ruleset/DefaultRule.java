@@ -2,7 +2,6 @@ package dev.ditsche.teki.rule.ruleset;
 
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.RuleResult;
-import java.math.BigDecimal;
 
 /**
  * Validates values with the Default rule.
@@ -27,12 +26,7 @@ public final class DefaultRule implements Rule {
   public RuleResult test(Object value) {
     if (value == null) return RuleResult.resolve(defaultValue);
     if (!(defaultValue.getClass().isAssignableFrom(value.getClass()))) return RuleResult.reject();
-    if (value instanceof String && ((String) value).trim().isEmpty())
-      return RuleResult.resolve(defaultValue);
-    if (value instanceof BigDecimal bd && bd.compareTo(BigDecimal.ZERO) == 0)
-      return RuleResult.resolve(defaultValue);
-    if (value instanceof Number && ((Number) value).longValue() == 0)
-      return RuleResult.resolve(defaultValue);
+    if (value instanceof String s && s.trim().isEmpty()) return RuleResult.resolve(defaultValue);
     return RuleResult.resolve();
   }
 
@@ -45,6 +39,6 @@ public final class DefaultRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "type.unassignable";
+    return "type.unassignable";
   }
 }

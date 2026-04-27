@@ -75,6 +75,6 @@ public final class SizeRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "size.size";
+    return "size.size";
   }
 }

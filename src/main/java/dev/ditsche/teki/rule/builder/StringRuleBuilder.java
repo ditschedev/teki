@@ -169,6 +169,17 @@ public final class StringRuleBuilder extends RuleBuilder {
   }
 
   /**
+   * Requires the value to be a well-formed UUID of the specified version (1–5).
+   *
+   * @param version required UUID version
+   * @return this builder for chaining
+   */
+  public StringRuleBuilder uuid(int version) {
+    this.rules.add(new UuidRule(version));
+    return this;
+  }
+
+  /**
    * Rejects blank values (null or whitespace-only strings).
    *
    * @return this builder for chaining

@@ -14,11 +14,13 @@ Teki schema = Teki.fromRules(
 
 ## Available methods
 
-| Method         | Purpose                         |
-| -------------- | ------------------------------- |
-| `isTrue()`     | Require the value to be `true`  |
-| `isFalse()`    | Require the value to be `false` |
-| `custom(Rule)` | Attach a custom rule            |
+| Method         | Purpose                                   |
+| -------------- | ----------------------------------------- |
+| `required()`   | Reject missing values                     |
+| `optional()`   | Skip validation when the value is missing |
+| `isTrue()`     | Require the value to be `true`            |
+| `isFalse()`    | Require the value to be `false`           |
+| `custom(Rule)` | Attach a custom rule                      |
 
 ## Notes
 

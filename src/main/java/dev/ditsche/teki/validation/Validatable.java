@@ -1,5 +1,7 @@
 package dev.ditsche.teki.validation;
 
+import dev.ditsche.teki.MessageResolver;
+
 /**
  * Represents an internal validation component used by Teki.
  *
@@ -20,7 +22,8 @@ public sealed interface Validatable permits ValidationArray, ValidationField, Va
    * @param parent parent field path
    * @param object value to validate
    * @param abortEarly whether validation should abort after the first failure
+   * @param resolver optional message resolver; {@code null} uses rule default messages
    * @return validation result
    */
-  ValidationResult validate(String parent, Object object, boolean abortEarly);
+  ValidationResult validate(String parent, Object object, boolean abortEarly, MessageResolver resolver);
 }

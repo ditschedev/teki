@@ -28,6 +28,6 @@ public final class NumberRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "type.number";
+    return "type.number";
   }
 }

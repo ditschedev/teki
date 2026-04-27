@@ -3,21 +3,21 @@ title: Size
 description: Require a value, length, or size to fall within a range.
 ---
 
-Use `size(...)` or `between(...)` for inclusive ranges.
+Use `between(...)` for inclusive ranges.
 
 ```java
 Teki schema = Teki.fromRules(
     string("displayName").between(2, 80),
-    number("quantity").size(1, 99),
-    array("items").size(1, 50)
+    number("quantity").between(1, 99),
+    array("items").between(1, 50)
 );
 ```
 
 ## Available on
 
 - `string(...)` as `between(int, int)`
-- `number(...)` as `size(long, long)`
-- `array(...)` as `size(int, int)`
+- `number(...)` as `between(long, long)`
+- `array(...)` as `between(int, int)`
 - `elements()` as `size(int, int)`
 
 ## Annotation equivalent

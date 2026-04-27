@@ -37,6 +37,6 @@ public final class BeforeRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "temporal.before";
+    return "temporal.before";
   }
 }

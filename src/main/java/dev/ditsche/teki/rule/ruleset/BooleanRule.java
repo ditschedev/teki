@@ -34,6 +34,6 @@ public final class BooleanRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "type.boolean";
+    return "type.boolean";
   }
 }

@@ -69,13 +69,13 @@ public final class ArrayRuleBuilder extends RuleBuilder {
   }
 
   /**
-   * Adds an inclusive size range constraint.
+   * Adds an inclusive range constraint.
    *
    * @param min minimum allowed value
    * @param max maximum allowed value
    * @return this builder for chaining
    */
-  public ArrayRuleBuilder size(int min, int max) {
+  public ArrayRuleBuilder between(int min, int max) {
     this.rules.add(new SizeRule(min, max));
     return this;
   }

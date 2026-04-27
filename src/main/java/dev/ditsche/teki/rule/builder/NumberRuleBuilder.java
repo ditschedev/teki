@@ -14,6 +14,7 @@ import java.util.LinkedList;
 public final class NumberRuleBuilder extends RuleBuilder {
 
   private final String field;
+  private boolean optional = false;
 
   NumberRuleBuilder(String field) {
     this.field = field;
@@ -44,13 +45,13 @@ public final class NumberRuleBuilder extends RuleBuilder {
   }
 
   /**
-   * Adds an inclusive size range constraint.
+   * Adds an inclusive range constraint.
    *
    * @param min minimum allowed value
    * @param max maximum allowed value
    * @return this builder for chaining
    */
-  public NumberRuleBuilder size(long min, long max) {
+  public NumberRuleBuilder between(long min, long max) {
     this.rules.add(new SizeRule(min, max));
     return this;
   }
@@ -127,6 +128,16 @@ public final class NumberRuleBuilder extends RuleBuilder {
     return this;
   }
 
+  /**
+   * Allows the value to be absent or null.
+   *
+   * @return this builder for chaining
+   */
+  public NumberRuleBuilder optional() {
+    this.optional = true;
+    return this;
+  }
+
   @Override
   public RuleBuilder custom(Rule rule) {
     this.rules.add(rule);
@@ -135,6 +146,6 @@ public final class NumberRuleBuilder extends RuleBuilder {
 
   @Override
   public Validatable build() {
-    return new ValidationField(this.field, this.rules);
+    return new ValidationField(this.field, this.rules, this.optional);
   }
 }

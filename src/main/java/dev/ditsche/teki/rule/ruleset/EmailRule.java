@@ -31,6 +31,6 @@ public final class EmailRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "format.email";
+    return "format.email";
   }
 }

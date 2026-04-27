@@ -25,6 +25,6 @@ public final class StringRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "type.string";
+    return "type.string";
   }
 }

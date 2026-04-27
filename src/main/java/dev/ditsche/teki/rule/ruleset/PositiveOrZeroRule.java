@@ -27,6 +27,6 @@ public final class PositiveOrZeroRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "number.positive_or_zero";
+    return "number.positive_or_zero";
   }
 }

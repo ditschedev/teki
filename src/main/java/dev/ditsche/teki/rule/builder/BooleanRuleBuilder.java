@@ -2,6 +2,7 @@ package dev.ditsche.teki.rule.builder;
 
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.ruleset.BooleanRule;
+import dev.ditsche.teki.rule.ruleset.RequiredRule;
 import dev.ditsche.teki.validation.Validatable;
 import dev.ditsche.teki.validation.ValidationField;
 import java.util.LinkedList;
@@ -14,6 +15,7 @@ import java.util.LinkedList;
 public final class BooleanRuleBuilder extends RuleBuilder {
 
   private final String field;
+  private boolean optional = false;
 
   BooleanRuleBuilder(String field) {
     this.field = field;
@@ -40,6 +42,26 @@ public final class BooleanRuleBuilder extends RuleBuilder {
     return this;
   }
 
+  /**
+   * Marks the value as required.
+   *
+   * @return this builder for chaining
+   */
+  public BooleanRuleBuilder required() {
+    this.rules.add(new RequiredRule());
+    return this;
+  }
+
+  /**
+   * Allows the value to be absent or null.
+   *
+   * @return this builder for chaining
+   */
+  public BooleanRuleBuilder optional() {
+    this.optional = true;
+    return this;
+  }
+
   @Override
   public RuleBuilder custom(Rule rule) {
     this.rules.add(rule);
@@ -48,6 +70,6 @@ public final class BooleanRuleBuilder extends RuleBuilder {
 
   @Override
   public Validatable build() {
-    return new ValidationField(this.field, this.rules);
+    return new ValidationField(this.field, this.rules, this.optional);
   }
 }

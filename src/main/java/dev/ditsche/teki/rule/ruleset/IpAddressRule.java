@@ -47,6 +47,6 @@ public final class IpAddressRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "format.ip";
+    return "format.ip";
   }
 }

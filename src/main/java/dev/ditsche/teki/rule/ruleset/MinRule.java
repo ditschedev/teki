@@ -53,6 +53,6 @@ public final class MinRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "size.min";
+    return "size.min";
   }
 }

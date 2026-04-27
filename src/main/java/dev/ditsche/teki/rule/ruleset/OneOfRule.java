@@ -39,6 +39,6 @@ public final class OneOfRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "string.one_of";
+    return "string.one_of";
   }
 }

@@ -26,6 +26,6 @@ public final class PastOrPresentRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "temporal.past_or_present";
+    return "temporal.past_or_present";
   }
 }

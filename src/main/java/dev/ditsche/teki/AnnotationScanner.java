@@ -90,7 +90,7 @@ final class AnnotationScanner {
       hasConstraints = true;
     }
     if (field.isAnnotationPresent(Uuid.class)) {
-      rules.add(new UuidRule());
+      rules.add(uuidRule(field.getAnnotation(Uuid.class)));
       hasConstraints = true;
     }
     if (field.isAnnotationPresent(NotBlank.class)) {
@@ -179,8 +179,12 @@ final class AnnotationScanner {
 
     if (!hasConstraints) return null;
 
-    // Fields with @Default must not be optional — DefaultRule needs to run on null values.
-    return new ValidationField(field.getName(), rules, !hasRequired && !hasDefault);
+    // @NotBlank implies presence; treat it like @Required for optionality.
+    // Fields with @Default must also not be optional — DefaultRule needs to run on null.
+    // @Optional is a no-op here: fields without @Required/@Default/@NotBlank are already optional.
+    // It exists purely as a self-documenting marker.
+    boolean hasNotBlank = field.isAnnotationPresent(NotBlank.class);
+    return new ValidationField(field.getName(), rules, !hasRequired && !hasDefault && !hasNotBlank);
   }
 
   // -------------------------------------------------------------------------
@@ -264,7 +268,7 @@ final class AnnotationScanner {
     if (a instanceof IpAddress) return new IpAddressRule();
     if (a instanceof AlphaNumeric) return new AlphaNumericRule();
     if (a instanceof CreditCard) return new CreditCardRule();
-    if (a instanceof Uuid) return new UuidRule();
+    if (a instanceof Uuid u) return uuidRule(u);
     if (a instanceof NotBlank) return new NotBlankRule();
     if (a instanceof OneOf o) return new OneOfRule(o);
     if (a instanceof Positive) return new PositiveRule();
@@ -318,6 +322,10 @@ final class AnnotationScanner {
   // -------------------------------------------------------------------------
   // Helpers
   // -------------------------------------------------------------------------
+
+  private static UuidRule uuidRule(Uuid annotation) {
+    return annotation.version() == 0 ? new UuidRule() : new UuidRule(annotation.version());
+  }
 
   private static boolean isCollectionType(Class<?> type) {
     return Collection.class.isAssignableFrom(type) || type.isArray();

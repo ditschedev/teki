@@ -23,6 +23,6 @@ public final class TemporalRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "temporal";
+    return "temporal";
   }
 }

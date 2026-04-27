@@ -26,6 +26,6 @@ public final class PastRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "temporal.past";
+    return "temporal.past";
   }
 }

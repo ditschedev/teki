@@ -53,6 +53,6 @@ public final class LengthRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "size.length";
+    return "size.length";
   }
 }

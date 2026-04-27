@@ -26,6 +26,6 @@ public final class TrimRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "format.trim";
+    return "format.trim";
   }
 }

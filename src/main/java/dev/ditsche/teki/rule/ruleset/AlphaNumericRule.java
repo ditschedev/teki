@@ -30,6 +30,6 @@ public final class AlphaNumericRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "format.alphanum";
+    return "format.alphanum";
   }
 }

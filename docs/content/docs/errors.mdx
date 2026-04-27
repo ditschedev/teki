@@ -89,3 +89,27 @@ schema.validate(request, true);
 ```
 
 Abort-early mode is useful for fast request rejection. Full collection is usually better for forms and API clients because it lets callers fix all invalid fields at once.
+
+## Custom messages
+
+Register a `MessageResolver` on a schema to override built-in English messages — for example to integrate an i18n bundle.
+
+```java
+import dev.ditsche.teki.MessageResolver;
+
+Teki schema = Teki.fromRules(
+    string("email").required().email()
+).messages((field, type) -> bundle.getString(type));
+```
+
+The resolver receives the field name and the stable error type key (e.g. `"validation.error.format.email"`). Return `null` to fall back to the rule's default message for that entry.
+
+```java
+// Return null for keys you haven't translated yet — the built-in message is used instead.
+schema.messages((field, type) -> {
+    String msg = bundle.getString(type);
+    return msg.isEmpty() ? null : msg;
+});
+```
+
+The full list of built-in type keys is available in the [error type reference](/docs/errors#error-shape).

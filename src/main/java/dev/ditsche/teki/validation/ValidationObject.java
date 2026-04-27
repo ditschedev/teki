@@ -1,5 +1,6 @@
 package dev.ditsche.teki.validation;
 
+import dev.ditsche.teki.MessageResolver;
 import dev.ditsche.teki.error.ErrorBag;
 import dev.ditsche.teki.rule.ruleset.RequiredRule;
 import java.lang.reflect.Field;
@@ -56,7 +57,7 @@ public final class ValidationObject implements Validatable {
   }
 
   @Override
-  public ValidationResult validate(String parent, Object object, boolean abortEarly) {
+  public ValidationResult validate(String parent, Object object, boolean abortEarly, MessageResolver resolver) {
     ErrorBag errorBag = new ErrorBag();
     boolean changed = false;
     if (optional && !(new RequiredRule().test(object).isPassed()))
@@ -70,7 +71,7 @@ public final class ValidationObject implements Validatable {
       Field f = FieldAccess.findField(fieldSet, validatable.getField());
       if (f == null) continue;
       Object value = FieldAccess.read(object, f);
-      ValidationResult result = validatable.validate(this.field + ".", value, abortEarly);
+      ValidationResult result = validatable.validate(this.field + ".", value, abortEarly, resolver);
       errorBag.merge(result.getErrorBag());
       if (result.isChanged()) {
         changed = true;

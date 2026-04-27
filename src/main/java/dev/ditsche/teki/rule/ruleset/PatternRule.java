@@ -36,6 +36,6 @@ public final class PatternRule implements Rule {
 
   @Override
   public String getType() {
-    return RULE_TYPE_PREFIX + "format.pattern";
+    return "format.pattern";
   }
 }
