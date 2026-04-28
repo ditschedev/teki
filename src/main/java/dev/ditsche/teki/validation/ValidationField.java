@@ -89,21 +89,23 @@ public final class ValidationField implements Validatable {
   }
 
   @Override
-  public ValidationResult validate(String parent, Object object, boolean abortEarly, MessageResolver resolver) {
+  public ValidationResult validate(
+      String parent, Object object, boolean abortEarly, MessageResolver resolver) {
     ErrorBag errorBag = new ErrorBag();
     boolean changed = false;
-    if (optional && !(new RequiredRule().test(object).isPassed()))
+    if (optional && !(new RequiredRule().test(object).passed()))
       return new ValidationResult(errorBag, object, false);
     for (Rule rule : rules) {
       RuleResult ruleResult = rule.test(object);
-      if (!ruleResult.isPassed()) {
-        String msg = resolver != null ? resolver.resolve(field, rule.getType()) : null;
+      if (!ruleResult.passed()) {
+        String msg =
+            resolver != null ? resolver.resolve(field, rule.getType(), rule.params()) : null;
         if (msg == null) msg = rule.message(field);
         errorBag.add(parent + field, rule.getType(), msg);
         if (abortEarly) throw new ValidationException(errorBag);
-      } else if (ruleResult.isChanged()) {
+      } else if (ruleResult.changed()) {
         changed = true;
-        object = ruleResult.getValue();
+        object = ruleResult.value();
       }
     }
     return new ValidationResult(errorBag, object, changed);

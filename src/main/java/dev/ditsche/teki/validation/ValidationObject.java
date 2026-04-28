@@ -57,10 +57,11 @@ public final class ValidationObject implements Validatable {
   }
 
   @Override
-  public ValidationResult validate(String parent, Object object, boolean abortEarly, MessageResolver resolver) {
+  public ValidationResult validate(
+      String parent, Object object, boolean abortEarly, MessageResolver resolver) {
     ErrorBag errorBag = new ErrorBag();
     boolean changed = false;
-    if (optional && !(new RequiredRule().test(object).isPassed()))
+    if (optional && !(new RequiredRule().test(object).passed()))
       return new ValidationResult(errorBag, object, false);
 
     List<Field> fieldSet = FieldAccess.getAllFields(object.getClass());

@@ -37,9 +37,7 @@ class ConditionalValidationTest {
   void whenConditionTrueAppliesRules() {
     Teki teki =
         Teki.fromRules(Rules.number("age").required(), Rules.string("parentName").optional())
-            .when(
-                (PersonForm f) -> f.age < 18,
-                Rules.string("parentName").required());
+            .when((PersonForm f) -> f.age < 18, Rules.string("parentName").required());
 
     assertThatThrownBy(() -> teki.validate(new PersonForm(16, null, null)))
         .isInstanceOf(ValidationException.class)
@@ -53,9 +51,7 @@ class ConditionalValidationTest {
   void whenConditionFalseSkipsRules() {
     Teki teki =
         Teki.fromRules(Rules.number("age").required(), Rules.string("parentName").optional())
-            .when(
-                (PersonForm f) -> f.age < 18,
-                Rules.string("parentName").required());
+            .when((PersonForm f) -> f.age < 18, Rules.string("parentName").required());
 
     assertThat(teki.check(new PersonForm(25, null, null)).isValid()).isTrue();
   }
@@ -74,17 +70,14 @@ class ConditionalValidationTest {
 
     assertThatThrownBy(() -> teki.validate(new PersonForm(15, null, null)))
         .isInstanceOf(ValidationException.class)
-        .satisfies(
-            ex -> assertThat(((ValidationException) ex).getErrors()).hasSize(2));
+        .satisfies(ex -> assertThat(((ValidationException) ex).getErrors()).hasSize(2));
   }
 
   @Test
   void whenConditionTrueButRulesPassValidationSucceeds() {
     Teki teki =
         Teki.fromRules(Rules.number("age").required(), Rules.string("parentName").optional())
-            .when(
-                (PersonForm f) -> f.age < 18,
-                Rules.string("parentName").required());
+            .when((PersonForm f) -> f.age < 18, Rules.string("parentName").required());
 
     assertThat(teki.check(new PersonForm(16, "Jane Doe", null)).isValid()).isTrue();
   }
@@ -105,8 +98,7 @@ class ConditionalValidationTest {
 
     assertThatThrownBy(() -> teki.validate(new AccountForm("business", null, null)))
         .isInstanceOf(ValidationException.class)
-        .satisfies(
-            ex -> assertThat(((ValidationException) ex).getErrors()).hasSize(2));
+        .satisfies(ex -> assertThat(((ValidationException) ex).getErrors()).hasSize(2));
 
     assertThat(teki.check(new AccountForm("personal", null, null)).isValid()).isTrue();
   }
@@ -114,9 +106,7 @@ class ConditionalValidationTest {
   @Test
   void whenBlockOnlyRunsWhenConditionHolds() {
     Teki teki =
-        Teki.fromRules(
-                Rules.string("accountType").required(),
-                Rules.string("vatNumber").optional())
+        Teki.fromRules(Rules.string("accountType").required(), Rules.string("vatNumber").optional())
             .when(
                 (AccountForm f) -> "business".equals(f.accountType),
                 Rules.string("vatNumber").required());
@@ -129,12 +119,8 @@ class ConditionalValidationTest {
   @Test
   void whenAndConstraintBothApply() {
     Teki teki =
-        Teki.fromRules(
-                Rules.number("age").required(),
-                Rules.string("parentName").optional())
-            .when(
-                (PersonForm f) -> f.age < 18,
-                Rules.string("parentName").required())
+        Teki.fromRules(Rules.number("age").required(), Rules.string("parentName").optional())
+            .when((PersonForm f) -> f.age < 18, Rules.string("parentName").required())
             .constraint(
                 (PersonForm f) -> f.age >= 0,
                 "age",

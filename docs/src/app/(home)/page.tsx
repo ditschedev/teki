@@ -103,7 +103,7 @@ export default function HomePage() {
     <main className="isolate bg-white text-neutral-950 dark:bg-neutral-950 dark:text-white">
       <section className="relative overflow-hidden border-b border-neutral-200 bg-neutral-50 text-neutral-950 dark:border-white/10 dark:bg-neutral-950 dark:text-white">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-          <div className="absolute inset-0 [background-image:radial-gradient(circle,rgba(0,0,0,0.07)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:linear-gradient(to_bottom,black_40%,transparent)] dark:[background-image:radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)]" />
+          <div className="absolute inset-0 [background-image:radial-gradient(circle,rgba(0,0,0,0.07)_1px,transparent_1px)] [mask-image:linear-gradient(to_bottom,black_40%,transparent)] [background-size:22px_22px] dark:[background-image:radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)]" />
         </div>
         <div className="mx-auto max-w-(--fd-layout-width) px-6 py-16 lg:px-10 lg:py-24">
           <div className="grid gap-12 xl:grid-cols-[9fr_11fr] xl:items-center">

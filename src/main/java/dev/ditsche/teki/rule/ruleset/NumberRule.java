@@ -1,5 +1,6 @@
 package dev.ditsche.teki.rule.ruleset;
 
+import dev.ditsche.teki.TekiErrors;
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.RuleResult;
 
@@ -9,6 +10,8 @@ import dev.ditsche.teki.rule.RuleResult;
  * @author Tobias Dittmann
  */
 public final class NumberRule implements Rule {
+
+  public static final String TYPE_KEY = TekiErrors.NUMBER;
 
   /** Creates a rule instance. */
   public NumberRule() {}
@@ -22,12 +25,7 @@ public final class NumberRule implements Rule {
   }
 
   @Override
-  public String message(String field) {
-    return String.format("The field \"%s\" needs to be a number", field);
-  }
-
-  @Override
   public String getType() {
-    return "type.number";
+    return TYPE_KEY;
   }
 }

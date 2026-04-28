@@ -1,5 +1,6 @@
 package dev.ditsche.teki.rule.ruleset;
 
+import dev.ditsche.teki.TekiErrors;
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.RuleResult;
 import java.math.BigDecimal;
@@ -11,6 +12,8 @@ import java.math.BigDecimal;
  */
 public final class PositiveOrZeroRule implements Rule {
 
+  public static final String TYPE_KEY = TekiErrors.POSITIVE_OR_ZERO;
+
   @Override
   public RuleResult test(Object value) {
     if (value == null) return RuleResult.reject();
@@ -21,12 +24,7 @@ public final class PositiveOrZeroRule implements Rule {
   }
 
   @Override
-  public String message(String field) {
-    return String.format("The field \"%s\" must be positive or zero", field);
-  }
-
-  @Override
   public String getType() {
-    return "number.positive_or_zero";
+    return TYPE_KEY;
   }
 }

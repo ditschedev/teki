@@ -1,5 +1,6 @@
 package dev.ditsche.teki.rule.ruleset;
 
+import dev.ditsche.teki.TekiErrors;
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.RuleResult;
 import java.util.Collection;
@@ -11,6 +12,8 @@ import java.util.Map;
  * @author Tobias Dittmann
  */
 public final class RequiredRule implements Rule {
+
+  public static final String TYPE_KEY = TekiErrors.REQUIRED;
 
   /** Creates a rule instance. */
   public RequiredRule() {}
@@ -34,12 +37,7 @@ public final class RequiredRule implements Rule {
   }
 
   @Override
-  public String message(String field) {
-    return String.format("The field \"%s\" is required", field);
-  }
-
-  @Override
   public String getType() {
-    return "format.required";
+    return TYPE_KEY;
   }
 }

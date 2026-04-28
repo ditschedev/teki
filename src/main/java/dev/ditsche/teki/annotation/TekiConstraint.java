@@ -10,8 +10,8 @@ import java.lang.annotation.Target;
 /**
  * Meta-annotation that marks a custom annotation as a Teki validation constraint.
  *
- * <p>Annotate your own annotation with {@code @TekiConstraint(rule = MyRule.class)} and the
- * scanner will automatically pick it up on any annotated field:
+ * <p>Annotate your own annotation with {@code @TekiConstraint(rule = MyRule.class)} and the scanner
+ * will automatically pick it up on any annotated field:
  *
  * <pre>{@code
  * @TekiConstraint(rule = PhoneNumberRule.class)

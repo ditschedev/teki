@@ -1,7 +1,9 @@
 package dev.ditsche.teki.rule.ruleset;
 
+import dev.ditsche.teki.TekiErrors;
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.RuleResult;
+import java.util.Map;
 
 /**
  * Validates values with the Default rule.
@@ -9,6 +11,8 @@ import dev.ditsche.teki.rule.RuleResult;
  * @author Tobias Dittmann
  */
 public final class DefaultRule implements Rule {
+
+  public static final String TYPE_KEY = TekiErrors.UNASSIGNABLE;
 
   private final Object defaultValue;
 
@@ -31,14 +35,12 @@ public final class DefaultRule implements Rule {
   }
 
   @Override
-  public String message(String field) {
-    return String.format(
-        "The field \"%s\" cannot obtain a value of class \"%s\"",
-        field, defaultValue.getClass().getName());
+  public Map<String, Object> params() {
+    return Map.of("valueType", defaultValue.getClass().getName());
   }
 
   @Override
   public String getType() {
-    return "type.unassignable";
+    return TYPE_KEY;
   }
 }

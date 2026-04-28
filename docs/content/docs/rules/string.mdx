@@ -23,7 +23,9 @@ Teki schema = Teki.fromRules(
 | `url()`                | Validate URLs                             |
 | `pattern(String)`      | Validate with a regular expression        |
 | `alphanum()`           | Allow only letters and digits             |
-| `ip()`                 | Validate IP addresses                     |
+| `ip()`                 | Validate IPv4 or IPv6 addresses           |
+| `ipv4()`               | Validate IPv4 addresses only              |
+| `ipv6()`               | Validate IPv6 addresses only              |
 | `creditCard()`         | Validate credit card numbers              |
 | `min(int)`             | Require a minimum length                  |
 | `max(int)`             | Require a maximum length                  |
@@ -38,4 +40,4 @@ Teki schema = Teki.fromRules(
 
 ## Annotation equivalent
 
-String fields can use annotations such as `@Required`, `@Email`, `@Url`, `@Pattern`, `@Size`, `@Trim`, `@Default`, `@Uuid`, `@NotBlank`, and `@OneOf`.
+String fields can use annotations such as `@Required`, `@Email`, `@Url`, `@Pattern`, `@Between`, `@Trim`, `@Default`, `@Uuid`, `@NotBlank`, and `@OneOf`.

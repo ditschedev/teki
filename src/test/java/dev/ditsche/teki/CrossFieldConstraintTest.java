@@ -32,7 +32,8 @@ class CrossFieldConstraintTest {
   @Test
   void passingConstraintDoesNotAddError() {
     Teki teki =
-        Teki.fromRules(Rules.string("password").required(), Rules.string("confirmPassword").required())
+        Teki.fromRules(
+                Rules.string("password").required(), Rules.string("confirmPassword").required())
             .constraint(
                 (PasswordForm f) -> f.password.equals(f.confirmPassword),
                 "confirmPassword",
@@ -46,7 +47,8 @@ class CrossFieldConstraintTest {
   @Test
   void failingConstraintAddsErrorOnCorrectField() {
     Teki teki =
-        Teki.fromRules(Rules.string("password").required(), Rules.string("confirmPassword").required())
+        Teki.fromRules(
+                Rules.string("password").required(), Rules.string("confirmPassword").required())
             .constraint(
                 (PasswordForm f) -> f.password.equals(f.confirmPassword),
                 "confirmPassword",
@@ -67,7 +69,8 @@ class CrossFieldConstraintTest {
   void constraintRunsAfterPerFieldValidation() {
     // If field-level validation already fails, constraint errors are still collected.
     Teki teki =
-        Teki.fromRules(Rules.string("password").required(), Rules.string("confirmPassword").required())
+        Teki.fromRules(
+                Rules.string("password").required(), Rules.string("confirmPassword").required())
             .constraint(
                 (PasswordForm f) -> f.password != null && f.password.equals(f.confirmPassword),
                 "confirmPassword",
@@ -78,7 +81,8 @@ class CrossFieldConstraintTest {
     assertThatThrownBy(() -> teki.validate(new PasswordForm(null, null)))
         .isInstanceOf(ValidationException.class)
         .satisfies(
-            ex -> assertThat(((ValidationException) ex).getErrors()).hasSizeGreaterThanOrEqualTo(2));
+            ex ->
+                assertThat(((ValidationException) ex).getErrors()).hasSizeGreaterThanOrEqualTo(2));
   }
 
   @Test
@@ -99,7 +103,8 @@ class CrossFieldConstraintTest {
   @Test
   void multipleConstraintsAllEvaluated() {
     Teki teki =
-        Teki.fromRules(Rules.string("password").required(), Rules.string("confirmPassword").required())
+        Teki.fromRules(
+                Rules.string("password").required(), Rules.string("confirmPassword").required())
             .constraint(
                 (PasswordForm f) -> f.password.equals(f.confirmPassword),
                 "confirmPassword",
@@ -113,19 +118,18 @@ class CrossFieldConstraintTest {
 
     assertThatThrownBy(() -> teki.validate(new PasswordForm("short", "short")))
         .isInstanceOf(ValidationException.class)
-        .satisfies(
-            ex -> assertThat(((ValidationException) ex).getErrors()).hasSize(1));
+        .satisfies(ex -> assertThat(((ValidationException) ex).getErrors()).hasSize(1));
 
     assertThatThrownBy(() -> teki.validate(new PasswordForm("short", "different")))
         .isInstanceOf(ValidationException.class)
-        .satisfies(
-            ex -> assertThat(((ValidationException) ex).getErrors()).hasSize(2));
+        .satisfies(ex -> assertThat(((ValidationException) ex).getErrors()).hasSize(2));
   }
 
   @Test
   void checkReturnsOutcomeWithConstraintErrors() {
     Teki teki =
-        Teki.fromRules(Rules.string("password").required(), Rules.string("confirmPassword").required())
+        Teki.fromRules(
+                Rules.string("password").required(), Rules.string("confirmPassword").required())
             .constraint(
                 (PasswordForm f) -> f.password.equals(f.confirmPassword),
                 "confirmPassword",

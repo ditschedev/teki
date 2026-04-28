@@ -1,5 +1,6 @@
 package dev.ditsche.teki.rule.ruleset;
 
+import dev.ditsche.teki.TekiErrors;
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.RuleResult;
 import java.time.Instant;
@@ -11,6 +12,8 @@ import java.time.Instant;
  */
 public final class PastRule implements Rule {
 
+  public static final String TYPE_KEY = TekiErrors.PAST;
+
   @Override
   public RuleResult test(Object value) {
     if (value == null) return RuleResult.reject();
@@ -20,12 +23,7 @@ public final class PastRule implements Rule {
   }
 
   @Override
-  public String message(String field) {
-    return String.format("The field \"%s\" must be a date in the past", field);
-  }
-
-  @Override
   public String getType() {
-    return "temporal.past";
+    return TYPE_KEY;
   }
 }

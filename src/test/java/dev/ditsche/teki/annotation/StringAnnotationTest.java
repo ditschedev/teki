@@ -50,8 +50,7 @@ class StringAnnotationTest {
 
   @Test
   void uuidRejectsMalformedValue() {
-    assertThatThrownBy(
-            () -> Teki.from(UuidForm.class).validate(new UuidForm("not-a-uuid")))
+    assertThatThrownBy(() -> Teki.from(UuidForm.class).validate(new UuidForm("not-a-uuid")))
         .isInstanceOf(ValidationException.class);
   }
 

@@ -1,5 +1,6 @@
 package dev.ditsche.teki.rule.ruleset;
 
+import dev.ditsche.teki.TekiErrors;
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.RuleResult;
 import java.util.regex.Pattern;
@@ -10,6 +11,8 @@ import java.util.regex.Pattern;
  * @author Tobias Dittmann
  */
 public final class AlphaNumericRule implements Rule {
+
+  public static final String TYPE_KEY = TekiErrors.ALPHA_NUMERIC;
 
   /** Creates a rule instance. */
   public AlphaNumericRule() {}
@@ -24,12 +27,7 @@ public final class AlphaNumericRule implements Rule {
   }
 
   @Override
-  public String message(String field) {
-    return String.format("The field \"%s\" must be alpha numeric", field);
-  }
-
-  @Override
   public String getType() {
-    return "format.alphanum";
+    return TYPE_KEY;
   }
 }

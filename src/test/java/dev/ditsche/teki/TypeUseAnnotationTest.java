@@ -3,11 +3,11 @@ package dev.ditsche.teki;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import dev.ditsche.teki.annotation.Between;
 import dev.ditsche.teki.annotation.Email;
 import dev.ditsche.teki.annotation.Max;
 import dev.ditsche.teki.annotation.Min;
 import dev.ditsche.teki.annotation.Required;
-import dev.ditsche.teki.annotation.Size;
 import dev.ditsche.teki.annotation.Trim;
 import dev.ditsche.teki.error.ValidationException;
 import java.util.List;
@@ -16,8 +16,7 @@ import org.junit.jupiter.api.Test;
 class TypeUseAnnotationTest {
 
   static class EmailListForm {
-    @Required
-    List<@Email String> recipients;
+    @Required List<@Email String> recipients;
 
     EmailListForm(List<String> recipients) {
       this.recipients = recipients;
@@ -25,7 +24,7 @@ class TypeUseAnnotationTest {
   }
 
   static class SizeConstrainedForm {
-    @Size(min = 1, max = 3)
+    @Between(min = 1, max = 3)
     List<@Min(0) @Max(100) Integer> scores;
 
     SizeConstrainedForm(List<Integer> scores) {
@@ -73,8 +72,7 @@ class TypeUseAnnotationTest {
   @Test
   void allEmailsInvalidProducesErrors() {
     Teki teki = Teki.from(EmailListForm.class);
-    assertThatThrownBy(
-            () -> teki.validate(new EmailListForm(List.of("bad1", "bad2", "bad3"))))
+    assertThatThrownBy(() -> teki.validate(new EmailListForm(List.of("bad1", "bad2", "bad3"))))
         .isInstanceOf(ValidationException.class);
   }
 
@@ -83,8 +81,7 @@ class TypeUseAnnotationTest {
     Teki teki = Teki.from(SizeConstrainedForm.class);
     assertThat(teki.validate(new SizeConstrainedForm(List.of(10, 50)))).isNotNull();
     // Too many elements
-    assertThatThrownBy(
-            () -> teki.validate(new SizeConstrainedForm(List.of(10, 20, 30, 40))))
+    assertThatThrownBy(() -> teki.validate(new SizeConstrainedForm(List.of(10, 20, 30, 40))))
         .isInstanceOf(ValidationException.class);
   }
 

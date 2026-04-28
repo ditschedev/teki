@@ -13,10 +13,8 @@ final class TemporalHelper {
     if (value instanceof Instant i) return i;
     if (value instanceof ZonedDateTime zdt) return zdt.toInstant();
     if (value instanceof OffsetDateTime odt) return odt.toInstant();
-    if (value instanceof LocalDateTime ldt)
-      return ldt.atZone(ZoneId.systemDefault()).toInstant();
-    if (value instanceof LocalDate ld)
-      return ld.atStartOfDay(ZoneId.systemDefault()).toInstant();
+    if (value instanceof LocalDateTime ldt) return ldt.atZone(ZoneId.systemDefault()).toInstant();
+    if (value instanceof LocalDate ld) return ld.atStartOfDay(ZoneId.systemDefault()).toInstant();
     if (value instanceof Date d) return d.toInstant();
     if (value instanceof Calendar c) return c.toInstant();
     return null;

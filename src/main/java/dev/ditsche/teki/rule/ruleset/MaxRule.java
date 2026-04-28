@@ -1,5 +1,6 @@
 package dev.ditsche.teki.rule.ruleset;
 
+import dev.ditsche.teki.TekiErrors;
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.RuleResult;
 import java.math.BigDecimal;
@@ -12,6 +13,8 @@ import java.util.Map;
  * @author Tobias Dittmann
  */
 public final class MaxRule implements Rule {
+
+  public static final String TYPE_KEY = TekiErrors.MAX;
 
   private final long max;
 
@@ -47,12 +50,12 @@ public final class MaxRule implements Rule {
   }
 
   @Override
-  public String message(String field) {
-    return String.format("The field \"%s\" must be at most %d", field, max);
+  public Map<String, Object> params() {
+    return Map.of("max", max);
   }
 
   @Override
   public String getType() {
-    return "size.max";
+    return TYPE_KEY;
   }
 }

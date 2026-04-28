@@ -3,12 +3,21 @@ title: IP Address
 description: Validate IP address strings.
 ---
 
-Use `ip()` on string fields.
+Use `ip()` on string fields to accept any valid IPv4 or IPv6 address.
 
 ```java
 Teki schema = Teki.fromRules(
     string("clientIp").ip()
 );
+```
+
+## Version-specific validation
+
+Use `ipv4()` or `ipv6()` to restrict to a single IP version.
+
+```java
+string("remoteAddr").ipv4()   // IPv4 only, e.g. "192.168.1.1"
+string("loopback").ipv6()     // IPv6 only, e.g. "::1"
 ```
 
 ## Available on
@@ -23,5 +32,11 @@ import dev.ditsche.teki.annotation.IpAddress;
 public class AuditEvent {
     @IpAddress
     private String clientIp;
+
+    @IpAddress(version = 4)
+    private String legacyIp;
+
+    @IpAddress(version = 6)
+    private String v6Address;
 }
 ```

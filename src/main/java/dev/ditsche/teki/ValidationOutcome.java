@@ -70,7 +70,7 @@ public final class ValidationOutcome<T> {
    * @param action consumer to invoke on success
    * @return this outcome for chaining
    */
-  public ValidationOutcome<T> onSuccess(Consumer<T> action) {
+  public ValidationOutcome<T> ifValid(Consumer<T> action) {
     if (isValid()) action.accept(value);
     return this;
   }
@@ -81,7 +81,7 @@ public final class ValidationOutcome<T> {
    * @param action consumer to invoke on failure
    * @return this outcome for chaining
    */
-  public ValidationOutcome<T> onFailure(Consumer<Collection<ValidationError>> action) {
+  public ValidationOutcome<T> orElse(Consumer<Collection<ValidationError>> action) {
     if (!isValid()) action.accept(getErrors());
     return this;
   }

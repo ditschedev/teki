@@ -1,5 +1,6 @@
 package dev.ditsche.teki.rule.ruleset;
 
+import dev.ditsche.teki.TekiErrors;
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.RuleResult;
 import java.math.BigDecimal;
@@ -7,22 +8,24 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Validates values with the Size rule.
+ * Validates that a value falls within an inclusive range.
  *
  * @author Tobias Dittmann
  */
-public final class SizeRule implements Rule {
+public final class BetweenRule implements Rule {
+
+  public static final String TYPE_KEY = TekiErrors.BETWEEN;
 
   private final long min;
   private final long max;
 
   /**
-   * Creates a SizeRule.
+   * Creates a BetweenRule.
    *
-   * @param min minimum allowed value
-   * @param max maximum allowed value
+   * @param min minimum allowed value (inclusive)
+   * @param max maximum allowed value (inclusive)
    */
-  public SizeRule(long min, long max) {
+  public BetweenRule(long min, long max) {
     this.min = min;
     this.max = max;
   }
@@ -69,12 +72,12 @@ public final class SizeRule implements Rule {
   }
 
   @Override
-  public String message(String field) {
-    return String.format("The field \"%s\" needs to be between %s and %s", field, min, max);
+  public Map<String, Object> params() {
+    return Map.of("min", min, "max", max);
   }
 
   @Override
   public String getType() {
-    return "size.size";
+    return TYPE_KEY;
   }
 }

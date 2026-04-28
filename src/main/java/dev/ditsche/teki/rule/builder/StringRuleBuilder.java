@@ -40,7 +40,7 @@ public final class StringRuleBuilder extends RuleBuilder {
    * @return this builder for chaining
    */
   public StringRuleBuilder between(int min, int max) {
-    this.rules.add(new SizeRule(min, max));
+    this.rules.add(new BetweenRule(min, max));
     return this;
   }
 
@@ -124,6 +124,26 @@ public final class StringRuleBuilder extends RuleBuilder {
    */
   public StringRuleBuilder ip() {
     this.rules.add(new IpAddressRule());
+    return this;
+  }
+
+  /**
+   * Requires the value to be a valid IPv4 address.
+   *
+   * @return this builder for chaining
+   */
+  public StringRuleBuilder ipv4() {
+    this.rules.add(new IpAddressRule(4));
+    return this;
+  }
+
+  /**
+   * Requires the value to be a valid IPv6 address.
+   *
+   * @return this builder for chaining
+   */
+  public StringRuleBuilder ipv6() {
+    this.rules.add(new IpAddressRule(6));
     return this;
   }
 

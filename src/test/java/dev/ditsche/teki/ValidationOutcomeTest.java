@@ -21,59 +21,60 @@ class ValidationOutcomeTest {
   }
 
   static Teki schema() {
-    return Teki.fromRules(Rules.string("email").required().email(), Rules.string("name").required());
+    return Teki.fromRules(
+        Rules.string("email").required().email(), Rules.string("name").required());
   }
 
   @Test
-  void checkReturnsValidOutcomeOnSuccess() {
+  void checkReturnsValidOutcomeIfValid() {
     ValidationOutcome<Form> outcome = schema().check(new Form("a@b.com", "Alice"));
     assertThat(outcome.isValid()).isTrue();
     assertThat(outcome.getValue().email).isEqualTo("a@b.com");
   }
 
   @Test
-  void checkReturnsInvalidOutcomeOnFailure() {
+  void checkReturnsInvalidOutcomeOrElse() {
     ValidationOutcome<Form> outcome = schema().check(new Form(null, null));
     assertThat(outcome.isValid()).isFalse();
     assertThat(outcome.getErrors()).hasSizeGreaterThanOrEqualTo(2);
   }
 
   @Test
-  void onSuccessCalledWhenValid() {
+  void ifValidCalledWhenValid() {
     AtomicBoolean called = new AtomicBoolean();
-    schema().check(new Form("a@b.com", "Alice")).onSuccess(f -> called.set(true));
+    schema().check(new Form("a@b.com", "Alice")).ifValid(f -> called.set(true));
     assertThat(called).isTrue();
   }
 
   @Test
-  void onSuccessNotCalledWhenInvalid() {
+  void ifValidNotCalledWhenInvalid() {
     AtomicBoolean called = new AtomicBoolean();
-    schema().check(new Form(null, null)).onSuccess(f -> called.set(true));
+    schema().check(new Form(null, null)).ifValid(f -> called.set(true));
     assertThat(called).isFalse();
   }
 
   @Test
-  void onFailureCalledWhenInvalid() {
+  void orElseCalledWhenInvalid() {
     AtomicBoolean called = new AtomicBoolean();
-    schema().check(new Form(null, null)).onFailure(errors -> called.set(true));
+    schema().check(new Form(null, null)).orElse(errors -> called.set(true));
     assertThat(called).isTrue();
   }
 
   @Test
-  void onFailureNotCalledWhenValid() {
+  void orElseNotCalledWhenValid() {
     AtomicBoolean called = new AtomicBoolean();
-    schema().check(new Form("a@b.com", "Alice")).onFailure(errors -> called.set(true));
+    schema().check(new Form("a@b.com", "Alice")).orElse(errors -> called.set(true));
     assertThat(called).isFalse();
   }
 
   @Test
-  void onSuccessAndOnFailureChain() {
+  void onSuccessAndOrElseChain() {
     AtomicBoolean success = new AtomicBoolean();
     AtomicBoolean failure = new AtomicBoolean();
     schema()
         .check(new Form(null, null))
-        .onSuccess(f -> success.set(true))
-        .onFailure(e -> failure.set(true));
+        .ifValid(f -> success.set(true))
+        .orElse(e -> failure.set(true));
     assertThat(success).isFalse();
     assertThat(failure).isTrue();
   }
@@ -99,7 +100,7 @@ class ValidationOutcomeTest {
   }
 
   @Test
-  void validateStillThrowsOnFailure() {
+  void validateStillThrowsOrElse() {
     assertThatThrownBy(() -> schema().validate(new Form(null, null)))
         .isInstanceOf(ValidationException.class);
   }

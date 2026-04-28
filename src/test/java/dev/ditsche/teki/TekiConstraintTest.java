@@ -84,7 +84,8 @@ class TekiConstraintTest {
   }
 
   static class ParameterizedForm {
-    @ExactLength(5) String code;
+    @ExactLength(5)
+    String code;
 
     ParameterizedForm(String code) {
       this.code = code;
@@ -121,9 +122,14 @@ class TekiConstraintTest {
   @Test
   void customRuleAlsoWorksInFluentApi() {
     // Custom rules can be added to the fluent API via .custom() — validate integration
-    Teki teki = Teki.fromRules(
-        dev.ditsche.teki.rule.builder.Rules.string("code").required().custom(new ExactLengthRule(
-            ParameterizedForm.class.getDeclaredFields()[0].getAnnotation(ExactLength.class))));
+    Teki teki =
+        Teki.fromRules(
+            dev.ditsche.teki.rule.builder.Rules.string("code")
+                .required()
+                .custom(
+                    new ExactLengthRule(
+                        ParameterizedForm.class.getDeclaredFields()[0].getAnnotation(
+                            ExactLength.class))));
 
     assertThatThrownBy(() -> teki.validate(new ParameterizedForm("hi")))
         .isInstanceOf(ValidationException.class);

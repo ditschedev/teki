@@ -1,7 +1,6 @@
 package dev.ditsche.teki;
 
 import dev.ditsche.teki.annotation.*;
-import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.annotation.After;
 import dev.ditsche.teki.annotation.Before;
 import dev.ditsche.teki.annotation.Future;
@@ -15,6 +14,7 @@ import dev.ditsche.teki.annotation.PastOrPresent;
 import dev.ditsche.teki.annotation.Positive;
 import dev.ditsche.teki.annotation.PositiveOrZero;
 import dev.ditsche.teki.annotation.Uuid;
+import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.ruleset.*;
 import dev.ditsche.teki.validation.Validatable;
 import dev.ditsche.teki.validation.ValidationArray;
@@ -78,7 +78,7 @@ final class AnnotationScanner {
       hasConstraints = true;
     }
     if (field.isAnnotationPresent(IpAddress.class)) {
-      rules.add(new IpAddressRule());
+      rules.add(ipAddressRule(field.getAnnotation(IpAddress.class)));
       hasConstraints = true;
     }
     if (field.isAnnotationPresent(AlphaNumeric.class)) {
@@ -157,9 +157,9 @@ final class AnnotationScanner {
       rules.add(new LengthRule(field.getAnnotation(Length.class).value()));
       hasConstraints = true;
     }
-    if (field.isAnnotationPresent(Size.class)) {
-      Size size = field.getAnnotation(Size.class);
-      rules.add(new SizeRule(size.min(), size.max()));
+    if (field.isAnnotationPresent(Between.class)) {
+      Between between = field.getAnnotation(Between.class);
+      rules.add(new BetweenRule(between.min(), between.max()));
       hasConstraints = true;
     }
     boolean hasDefault = field.isAnnotationPresent(Default.class);
@@ -202,25 +202,30 @@ final class AnnotationScanner {
       collectionRules.add(new MaxRule(field.getAnnotation(Max.class).value()));
     if (field.isAnnotationPresent(Length.class))
       collectionRules.add(new LengthRule(field.getAnnotation(Length.class).value()));
-    if (field.isAnnotationPresent(Size.class)) {
-      Size size = field.getAnnotation(Size.class);
-      collectionRules.add(new SizeRule(size.min(), size.max()));
+    if (field.isAnnotationPresent(Between.class)) {
+      Between between = field.getAnnotation(Between.class);
+      collectionRules.add(new BetweenRule(between.min(), between.max()));
     }
 
     // Element-level rules from TYPE_USE annotations on the generic type argument
     List<Rule> elementRules = buildElementRules(field);
 
-    boolean hasAnyConstraint = hasRequired
-        || field.isAnnotationPresent(Min.class)
-        || field.isAnnotationPresent(Max.class)
-        || field.isAnnotationPresent(Length.class)
-        || field.isAnnotationPresent(Size.class)
-        || !elementRules.isEmpty();
+    boolean hasAnyConstraint =
+        hasRequired
+            || field.isAnnotationPresent(Min.class)
+            || field.isAnnotationPresent(Max.class)
+            || field.isAnnotationPresent(Length.class)
+            || field.isAnnotationPresent(Between.class)
+            || !elementRules.isEmpty();
 
     if (!hasAnyConstraint) return null;
 
     return new ValidationArray(
-        field.getName(), collectionRules, elementRules.isEmpty() ? null : elementRules, null, !hasRequired);
+        field.getName(),
+        collectionRules,
+        elementRules.isEmpty() ? null : elementRules,
+        null,
+        !hasRequired);
   }
 
   /**
@@ -265,7 +270,7 @@ final class AnnotationScanner {
     if (a instanceof Trim) return new TrimRule();
     if (a instanceof Email) return new EmailRule();
     if (a instanceof Url) return new UrlRule();
-    if (a instanceof IpAddress) return new IpAddressRule();
+    if (a instanceof IpAddress ip) return ipAddressRule(ip);
     if (a instanceof AlphaNumeric) return new AlphaNumericRule();
     if (a instanceof CreditCard) return new CreditCardRule();
     if (a instanceof Uuid u) return uuidRule(u);
@@ -285,7 +290,7 @@ final class AnnotationScanner {
     if (a instanceof Min m) return new MinRule(m.value());
     if (a instanceof Max m) return new MaxRule(m.value());
     if (a instanceof Length l) return new LengthRule(l.value());
-    if (a instanceof Size s) return new SizeRule(s.min(), s.max());
+    if (a instanceof Between s) return new BetweenRule(s.min(), s.max());
     return null;
   }
 
@@ -296,7 +301,8 @@ final class AnnotationScanner {
   private static Rule instantiateRule(Class<? extends Rule> ruleClass, Annotation annotation) {
     // Prefer a constructor that accepts the annotation (allows rules to read annotation params)
     try {
-      Constructor<? extends Rule> ctor = ruleClass.getDeclaredConstructor(annotation.annotationType());
+      Constructor<? extends Rule> ctor =
+          ruleClass.getDeclaredConstructor(annotation.annotationType());
       ctor.setAccessible(true);
       return ctor.newInstance(annotation);
     } catch (NoSuchMethodException ignored) {
@@ -325,6 +331,12 @@ final class AnnotationScanner {
 
   private static UuidRule uuidRule(Uuid annotation) {
     return annotation.version() == 0 ? new UuidRule() : new UuidRule(annotation.version());
+  }
+
+  private static IpAddressRule ipAddressRule(IpAddress annotation) {
+    return annotation.version() == 0
+        ? new IpAddressRule()
+        : new IpAddressRule(annotation.version());
   }
 
   private static boolean isCollectionType(Class<?> type) {

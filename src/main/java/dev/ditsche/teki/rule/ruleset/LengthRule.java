@@ -1,5 +1,6 @@
 package dev.ditsche.teki.rule.ruleset;
 
+import dev.ditsche.teki.TekiErrors;
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.RuleResult;
 import java.math.BigDecimal;
@@ -12,6 +13,8 @@ import java.util.Map;
  * @author Tobias Dittmann
  */
 public final class LengthRule implements Rule {
+
+  public static final String TYPE_KEY = TekiErrors.LENGTH;
 
   private final long length;
 
@@ -47,12 +50,12 @@ public final class LengthRule implements Rule {
   }
 
   @Override
-  public String message(String field) {
-    return String.format("The field \"%s\" needs to have a length of %s", field, length);
+  public Map<String, Object> params() {
+    return Map.of("length", length);
   }
 
   @Override
   public String getType() {
-    return "size.length";
+    return TYPE_KEY;
   }
 }

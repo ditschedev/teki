@@ -1,5 +1,6 @@
 package dev.ditsche.teki.rule.ruleset;
 
+import dev.ditsche.teki.TekiErrors;
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.RuleResult;
 import java.math.BigDecimal;
@@ -12,6 +13,8 @@ import java.util.Map;
  * @author Tobias Dittmann
  */
 public final class MinRule implements Rule {
+
+  public static final String TYPE_KEY = TekiErrors.MIN;
 
   private final long min;
 
@@ -47,12 +50,12 @@ public final class MinRule implements Rule {
   }
 
   @Override
-  public String message(String field) {
-    return String.format("The field \"%s\" must be at least %d", field, min);
+  public Map<String, Object> params() {
+    return Map.of("min", min);
   }
 
   @Override
   public String getType() {
-    return "size.min";
+    return TYPE_KEY;
   }
 }

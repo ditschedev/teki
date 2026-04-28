@@ -76,7 +76,7 @@ public final class ArrayRuleBuilder extends RuleBuilder {
    * @return this builder for chaining
    */
   public ArrayRuleBuilder between(int min, int max) {
-    this.rules.add(new SizeRule(min, max));
+    this.rules.add(new BetweenRule(min, max));
     return this;
   }
 

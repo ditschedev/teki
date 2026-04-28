@@ -1,9 +1,11 @@
 package dev.ditsche.teki.rule.ruleset;
 
+import dev.ditsche.teki.TekiErrors;
 import dev.ditsche.teki.annotation.OneOf;
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.RuleResult;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -13,6 +15,8 @@ import java.util.stream.Collectors;
  * @author Tobias Dittmann
  */
 public final class OneOfRule implements Rule {
+
+  public static final String TYPE_KEY = TekiErrors.ONE_OF;
 
   private final Set<String> allowed;
 
@@ -31,14 +35,12 @@ public final class OneOfRule implements Rule {
   }
 
   @Override
-  public String message(String field) {
-    return String.format(
-        "The field \"%s\" must be one of: %s",
-        field, String.join(", ", allowed));
+  public Map<String, Object> params() {
+    return Map.of("allowed", String.join(", ", allowed));
   }
 
   @Override
   public String getType() {
-    return "string.one_of";
+    return TYPE_KEY;
   }
 }

@@ -6,24 +6,24 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Declares the @Size validation annotation.
+ * Declares the @Between validation annotation.
  *
  * @author Tobias Dittmann
  */
 @Target({ElementType.FIELD, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Size {
+public @interface Between {
   /**
-   * Provides this annotation value.
+   * Minimum allowed value (inclusive).
    *
-   * @return annotation value
+   * @return minimum
    */
   long min();
 
   /**
-   * Provides this annotation value.
+   * Maximum allowed value (inclusive).
    *
-   * @return annotation value
+   * @return maximum
    */
   long max();
 }

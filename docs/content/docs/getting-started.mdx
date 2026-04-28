@@ -77,7 +77,7 @@ If you prefer model-level constraints, add Teki annotations and scan the class:
 import dev.ditsche.teki.Teki;
 import dev.ditsche.teki.annotation.Email;
 import dev.ditsche.teki.annotation.Required;
-import dev.ditsche.teki.annotation.Size;
+import dev.ditsche.teki.annotation.Between;
 import dev.ditsche.teki.annotation.Trim;
 
 public class SignupRequest {
@@ -87,7 +87,7 @@ public class SignupRequest {
     private String email;
 
     @Required
-    @Size(min = 8, max = 128)
+    @Between(min = 8, max = 128)
     private String password;
 }
 

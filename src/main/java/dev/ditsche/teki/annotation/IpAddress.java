@@ -12,4 +12,6 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.FIELD, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface IpAddress {}
+public @interface IpAddress {
+  int version() default 0;
+}

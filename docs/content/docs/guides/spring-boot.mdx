@@ -38,7 +38,7 @@ public class SignupRequest {
     private String email;
 
     @Required
-    @Size(min = 8, max = 128)
+    @Between(min = 8, max = 128)
     private String password;
 
     @Required
@@ -214,5 +214,8 @@ public class AuthController {
 ```
 
 <Callout>
-The aspect validates all non-null method arguments. If a controller method accepts multiple parameters such as a path variable and a request body, both are passed to `Teki.from(...)`. Classes without Teki annotations produce an empty schema and pass silently, so there is no need to filter arguments manually.
+  The aspect validates all non-null method arguments. If a controller method accepts multiple
+  parameters such as a path variable and a request body, both are passed to `Teki.from(...)`.
+  Classes without Teki annotations produce an empty schema and pass silently, so there is no need to
+  filter arguments manually.
 </Callout>

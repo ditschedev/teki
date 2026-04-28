@@ -1,7 +1,9 @@
 package dev.ditsche.teki.rule.ruleset;
 
+import dev.ditsche.teki.TekiErrors;
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.RuleResult;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -10,6 +12,8 @@ import java.util.UUID;
  * @author Tobias Dittmann
  */
 public final class UuidRule implements Rule {
+
+  public static final String TYPE_KEY = TekiErrors.UUID;
 
   private final int version;
 
@@ -43,14 +47,12 @@ public final class UuidRule implements Rule {
   }
 
   @Override
-  public String message(String field) {
-    if (version != 0)
-      return String.format("The field \"%s\" must be a valid UUID (version %d)", field, version);
-    return String.format("The field \"%s\" must be a valid UUID", field);
+  public Map<String, Object> params() {
+    return version != 0 ? Map.of("version", version) : Map.of();
   }
 
   @Override
   public String getType() {
-    return "format.uuid";
+    return TYPE_KEY;
   }
 }

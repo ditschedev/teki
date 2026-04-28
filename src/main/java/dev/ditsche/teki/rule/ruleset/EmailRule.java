@@ -1,5 +1,6 @@
 package dev.ditsche.teki.rule.ruleset;
 
+import dev.ditsche.teki.TekiErrors;
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.RuleResult;
 import java.util.regex.Pattern;
@@ -11,11 +12,14 @@ import java.util.regex.Pattern;
  */
 public final class EmailRule implements Rule {
 
+  public static final String TYPE_KEY = TekiErrors.EMAIL;
+
   /** Creates a rule instance. */
   public EmailRule() {}
 
   private static final Pattern PATTERN =
-      Pattern.compile("^[A-Za-z0-9][A-Za-z0-9._%'+\\-]*@[A-Za-z0-9][A-Za-z0-9.\\-]*\\.[A-Za-z]{2,}$");
+      Pattern.compile(
+          "^[A-Za-z0-9][A-Za-z0-9._%'+\\-]*@[A-Za-z0-9][A-Za-z0-9.\\-]*\\.[A-Za-z]{2,}$");
 
   @Override
   public RuleResult test(Object value) {
@@ -25,12 +29,7 @@ public final class EmailRule implements Rule {
   }
 
   @Override
-  public String message(String field) {
-    return String.format("The field \"%s\" must be a valid email address", field);
-  }
-
-  @Override
   public String getType() {
-    return "format.email";
+    return TYPE_KEY;
   }
 }

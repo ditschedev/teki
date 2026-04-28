@@ -33,12 +33,15 @@ Requires Java 17+.
 import static dev.ditsche.teki.rule.builder.Rules.*;
 
 Teki schema = Teki.fromRules(
-    string("email").required().email().trim(),
-    string("password").required().min(8),
+    string(Request::getEmail).required().email().trim(),
+    string(Request::password).required().min(8),
     number("age").required().positive()
 );
 
 schema.validate(request);
+// or
+ValidationOutcome<Request> result = schema.check(request);
+
 ```
 
 ## Development

@@ -7,7 +7,7 @@ export default function NotFound() {
       <div className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-6 py-24">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 [background-image:radial-gradient(circle,rgba(0,0,0,0.07)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,black,transparent)] dark:[background-image:radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)]"
+          className="pointer-events-none absolute inset-0 [background-image:radial-gradient(circle,rgba(0,0,0,0.07)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,black,transparent)] [background-size:22px_22px] dark:[background-image:radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)]"
         />
 
         <div className="relative flex flex-col items-center text-center">

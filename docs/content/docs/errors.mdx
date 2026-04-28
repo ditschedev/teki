@@ -74,6 +74,13 @@ customer.email
 shippingAddress.postalCode
 ```
 
+Array element errors include the zero-based index in square brackets:
+
+```text
+tags[2]
+items[0].sku
+```
+
 ## Collecting errors
 
 By default, Teki validates every configured field and throws one exception containing all failures.
@@ -92,24 +99,103 @@ Abort-early mode is useful for fast request rejection. Full collection is usuall
 
 ## Custom messages
 
-Register a `MessageResolver` on a schema to override built-in English messages — for example to integrate an i18n bundle.
+Use `TekiMessages` to override built-in English messages without writing a full resolver.
+Templates support `{field}` for the field name and named placeholders for rule params
+(e.g. `{min}`, `{max}`, `{length}`, `{allowed}`).
+
+```java
+import dev.ditsche.teki.TekiMessages;
+import dev.ditsche.teki.TekiErrors;
+
+// Apply to a single schema
+Teki schema = Teki.fromRules(
+    string("username").required().between(2, 50)
+).messages(
+    TekiMessages.defaults()
+        .override(TekiErrors.BETWEEN, "Must be between {min} and {max} characters")
+        .override(TekiErrors.REQUIRED, "{field} is required")
+);
+```
+
+Set messages globally to apply them across all schemas:
+
+```java
+Teki.setGlobalMessages(
+    TekiMessages.defaults()
+        .override(TekiErrors.BETWEEN,     "Must be between {min} and {max}")
+        .override(TekiErrors.REQUIRED, "{field} is required")
+);
+```
+
+### Loading from a properties file
+
+Place a `.properties` file on the classpath and pass its path to `fromProperties`. Each key
+is a stable error type (see `TekiErrors`); each value is the template string.
+
+```properties
+# i18n/messages_de.properties
+format.required  = Das Feld "{field}" ist erforderlich
+format.email     = Das Feld "{field}" muss eine gültige E-Mail sein
+between          = Muss zwischen {min} und {max} liegen
+size.min         = Das Feld "{field}" muss mindestens {min} betragen
+```
+
+```java
+Teki.setGlobalMessages(
+    TekiMessages.defaults()
+        .fromProperties("i18n/messages_de.properties")
+);
+```
+
+`fromProperties` merges into the existing templates — keys present in the file override the
+defaults; keys not in the file keep their current values.
+
+### Error type keys
+
+All built-in error type keys are available as constants on `TekiErrors`:
+
+| Constant                       | Key                          |
+| ------------------------------ | ---------------------------- |
+| `TekiErrors.REQUIRED`          | `format.required`            |
+| `TekiErrors.EMAIL`             | `format.email`               |
+| `TekiErrors.URL`               | `format.url`                 |
+| `TekiErrors.IP_ADDRESS`        | `format.ip`                  |
+| `TekiErrors.UUID`              | `format.uuid`                |
+| `TekiErrors.CREDIT_CARD`       | `format.creditcard`          |
+| `TekiErrors.ALPHA_NUMERIC`     | `format.alphanum`            |
+| `TekiErrors.PATTERN`           | `format.pattern`             |
+| `TekiErrors.STRING`            | `type.string`                |
+| `TekiErrors.NUMBER`            | `type.number`                |
+| `TekiErrors.BOOLEAN`           | `type.boolean`               |
+| `TekiErrors.ARRAY`             | `type.array`                 |
+| `TekiErrors.NOT_BLANK`         | `string.not_blank`           |
+| `TekiErrors.ONE_OF`            | `string.one_of`              |
+| `TekiErrors.POSITIVE`          | `number.positive`            |
+| `TekiErrors.POSITIVE_OR_ZERO`  | `number.positive_or_zero`    |
+| `TekiErrors.NEGATIVE`          | `number.negative`            |
+| `TekiErrors.NEGATIVE_OR_ZERO`  | `number.negative_or_zero`    |
+| `TekiErrors.MIN`               | `size.min`                   |
+| `TekiErrors.MAX`               | `size.max`                   |
+| `TekiErrors.LENGTH`            | `size.length`                |
+| `TekiErrors.BETWEEN`           | `between`                    |
+| `TekiErrors.PAST`              | `temporal.past`              |
+| `TekiErrors.PAST_OR_PRESENT`   | `temporal.past_or_present`   |
+| `TekiErrors.FUTURE`            | `temporal.future`            |
+| `TekiErrors.FUTURE_OR_PRESENT` | `temporal.future_or_present` |
+| `TekiErrors.BEFORE`            | `temporal.before`            |
+| `TekiErrors.AFTER`             | `temporal.after`             |
+
+### Full programmatic control
+
+For cases that can't be expressed as templates — custom rule type keys, dynamic logic — implement
+`MessageResolver` directly. Return `null` for any type you haven't handled to fall through to
+the next resolver in the chain.
 
 ```java
 import dev.ditsche.teki.MessageResolver;
 
-Teki schema = Teki.fromRules(
-    string("email").required().email()
-).messages((field, type) -> bundle.getString(type));
-```
-
-The resolver receives the field name and the stable error type key (e.g. `"validation.error.format.email"`). Return `null` to fall back to the rule's default message for that entry.
-
-```java
-// Return null for keys you haven't translated yet — the built-in message is used instead.
-schema.messages((field, type) -> {
-    String msg = bundle.getString(type);
-    return msg.isEmpty() ? null : msg;
+schema.messages((field, type, params) -> {
+    if ("my.custom.rule".equals(type)) return "Custom error for " + field;
+    return null; // fall through to global messages / rule default
 });
 ```
-
-The full list of built-in type keys is available in the [error type reference](/docs/errors#error-shape).

@@ -1,9 +1,11 @@
 package dev.ditsche.teki.rule.ruleset;
 
+import dev.ditsche.teki.TekiErrors;
 import dev.ditsche.teki.annotation.After;
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.RuleResult;
 import java.time.Instant;
+import java.util.Map;
 
 /**
  * Validates that the value is strictly after a fixed date/time boundary.
@@ -11,6 +13,8 @@ import java.time.Instant;
  * @author Tobias Dittmann
  */
 public final class AfterRule implements Rule {
+
+  public static final String TYPE_KEY = TekiErrors.AFTER;
 
   private final Instant boundary;
 
@@ -31,12 +35,12 @@ public final class AfterRule implements Rule {
   }
 
   @Override
-  public String message(String field) {
-    return String.format("The field \"%s\" must be after %s", field, boundary);
+  public Map<String, Object> params() {
+    return Map.of("boundary", boundary.toString());
   }
 
   @Override
   public String getType() {
-    return "temporal.after";
+    return TYPE_KEY;
   }
 }

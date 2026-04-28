@@ -1,5 +1,6 @@
 package dev.ditsche.teki.rule.ruleset;
 
+import dev.ditsche.teki.TekiErrors;
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.RuleResult;
 import java.util.regex.Pattern;
@@ -10,6 +11,8 @@ import java.util.regex.Pattern;
  * @author Tobias Dittmann
  */
 public final class PatternRule implements Rule {
+
+  public static final String TYPE_KEY = TekiErrors.PATTERN;
 
   private final Pattern compiled;
 
@@ -30,12 +33,7 @@ public final class PatternRule implements Rule {
   }
 
   @Override
-  public String message(String field) {
-    return String.format("The field \"%s\" has an invalid format", field);
-  }
-
-  @Override
   public String getType() {
-    return "format.pattern";
+    return TYPE_KEY;
   }
 }

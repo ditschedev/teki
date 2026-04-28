@@ -10,7 +10,7 @@ Annotations are useful when a class should carry its own validation contract. Ca
 import dev.ditsche.teki.Teki;
 import dev.ditsche.teki.annotation.Email;
 import dev.ditsche.teki.annotation.Required;
-import dev.ditsche.teki.annotation.Size;
+import dev.ditsche.teki.annotation.Between;
 import dev.ditsche.teki.annotation.Trim;
 
 public class SignupRequest {
@@ -20,7 +20,7 @@ public class SignupRequest {
     private String email;
 
     @Required
-    @Size(min = 8, max = 128)
+    @Between(min = 8, max = 128)
     private String password;
 }
 
@@ -34,7 +34,7 @@ Fields without `@Required` are treated as optional. Teki skips their validation 
 ```java
 public class ProfileUpdate {
     @Trim
-    @Size(min = 2, max = 80)
+    @Between(min = 2, max = 80)
     private String displayName;
 }
 ```
@@ -43,34 +43,34 @@ In this example, `displayName` may be omitted. If it is present, Teki trims it a
 
 ## Supported annotations
 
-| Annotation                    | Purpose                             |
-| ----------------------------- | ----------------------------------- |
-| `@Required`                   | Rejects missing values              |
-| `@Trim`                       | Trims string values                 |
-| `@Email`                      | Validates email addresses           |
-| `@Url`                        | Validates URLs                      |
-| `@IpAddress`                  | Validates IP addresses              |
-| `@AlphaNumeric`               | Allows only alphanumeric text       |
-| `@CreditCard`                 | Validates credit card numbers       |
-| `@Pattern("...")`             | Validates with a regular expression |
-| `@Min(value)`                 | Enforces a minimum value or length  |
-| `@Max(value)`                 | Enforces a maximum value or length  |
-| `@Length(value)`              | Enforces an exact length            |
-| `@Size(min = ..., max = ...)` | Enforces a range                    |
-| `@Default("...")`             | Applies a default value             |
-| `@Past`                       | Requires a date in the past         |
-| `@Future`                     | Requires a date in the future       |
-| `@PastOrPresent`              | Requires a date in the past or now  |
-| `@FutureOrPresent`            | Requires a date in the future or now |
-| `@Before("...")`              | Requires a date before a fixed boundary |
-| `@After("...")`               | Requires a date after a fixed boundary  |
-| `@Uuid`                       | Validates UUID format                   |
-| `@NotBlank`                   | Rejects null and whitespace-only strings |
-| `@OneOf({"..."})`             | Requires the value to be in a fixed set |
-| `@Positive`                   | Requires a number > zero                |
-| `@PositiveOrZero`             | Requires a number ≥ zero                |
-| `@Negative`                   | Requires a number < zero                |
-| `@NegativeOrZero`             | Requires a number ≤ zero                |
+| Annotation                       | Purpose                                  |
+| -------------------------------- | ---------------------------------------- |
+| `@Required`                      | Rejects missing values                   |
+| `@Trim`                          | Trims string values                      |
+| `@Email`                         | Validates email addresses                |
+| `@Url`                           | Validates URLs                           |
+| `@IpAddress`                     | Validates IP addresses                   |
+| `@AlphaNumeric`                  | Allows only alphanumeric text            |
+| `@CreditCard`                    | Validates credit card numbers            |
+| `@Pattern("...")`                | Validates with a regular expression      |
+| `@Min(value)`                    | Enforces a minimum value or length       |
+| `@Max(value)`                    | Enforces a maximum value or length       |
+| `@Length(value)`                 | Enforces an exact length                 |
+| `@Between(min = ..., max = ...)` | Enforces a range                         |
+| `@Default("...")`                | Applies a default value                  |
+| `@Past`                          | Requires a date in the past              |
+| `@Future`                        | Requires a date in the future            |
+| `@PastOrPresent`                 | Requires a date in the past or now       |
+| `@FutureOrPresent`               | Requires a date in the future or now     |
+| `@Before("...")`                 | Requires a date before a fixed boundary  |
+| `@After("...")`                  | Requires a date after a fixed boundary   |
+| `@Uuid`                          | Validates UUID format                    |
+| `@NotBlank`                      | Rejects null and whitespace-only strings |
+| `@OneOf({"..."})`                | Requires the value to be in a fixed set  |
+| `@Positive`                      | Requires a number > zero                 |
+| `@PositiveOrZero`                | Requires a number ≥ zero                 |
+| `@Negative`                      | Requires a number < zero                 |
+| `@NegativeOrZero`                | Requires a number ≤ zero                 |
 
 ## Defaults
 

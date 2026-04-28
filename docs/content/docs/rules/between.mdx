@@ -1,6 +1,6 @@
 ---
-title: Size
-description: Require a value, length, or size to fall within a range.
+title: Between
+description: Require a value, length, or collection size to fall within an inclusive range.
 ---
 
 Use `between(...)` for inclusive ranges.
@@ -18,15 +18,15 @@ Teki schema = Teki.fromRules(
 - `string(...)` as `between(int, int)`
 - `number(...)` as `between(long, long)`
 - `array(...)` as `between(int, int)`
-- `elements()` as `size(int, int)`
+- `elements()` as `between(int, int)`
 
 ## Annotation equivalent
 
 ```java
-import dev.ditsche.teki.annotation.Size;
+import dev.ditsche.teki.annotation.Between;
 
 public class SignupRequest {
-    @Size(min = 8, max = 128)
+    @Between(min = 8, max = 128)
     private String password;
 }
 ```

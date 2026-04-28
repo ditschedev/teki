@@ -14,8 +14,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface After {
   /**
-   * ISO-8601 date/time string the value must be strictly after (e.g. {@code "2025-01-01"} or
-   * {@code "2025-01-01T00:00:00Z"}).
+   * ISO-8601 date/time string the value must be strictly after (e.g. {@code "2025-01-01"} or {@code
+   * "2025-01-01T00:00:00Z"}).
    *
    * @return boundary value
    */

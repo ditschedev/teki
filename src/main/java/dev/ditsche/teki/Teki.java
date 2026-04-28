@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
 /**
@@ -22,6 +23,8 @@ import java.util.function.Predicate;
 public final class Teki {
 
   private static final Map<Class<?>, Teki> CACHE = new ConcurrentHashMap<>();
+  private static final AtomicReference<MessageResolver> GLOBAL_RESOLVER =
+      new AtomicReference<>(TekiMessages.defaults());
 
   private final List<Validatable> fields;
   private final List<CrossFieldConstraint> constraints;
@@ -101,11 +104,27 @@ public final class Teki {
   // -------------------------------------------------------------------------
 
   /**
-   * Registers a message resolver that overrides built-in validation messages.
+   * Configures per-schema message templates. Takes precedence over the global messages set via
+   * {@link #setGlobalMessages(TekiMessages)}.
    *
-   * <p>The resolver is called with the field name and the stable error type key
-   * (e.g. {@code "validation.error.format.email"}). Return {@code null} to fall back to the
-   * rule's built-in message for that entry.
+   * <pre>{@code
+   * Teki schema = Teki.fromRules(...)
+   *     .messages(TekiMessages.defaults().override(TekiErrors.EMAIL, "Invalid email"));
+   * }</pre>
+   *
+   * @param messages configured {@link TekiMessages} instance
+   * @return this schema for chaining
+   */
+  public Teki messages(TekiMessages messages) {
+    this.messageResolver = messages;
+    return this;
+  }
+
+  /**
+   * Registers a custom {@link MessageResolver} for this schema. Use this for full programmatic
+   * control; prefer {@link #messages(TekiMessages)} for simple template overrides.
+   *
+   * <p>Return {@code null} to fall back to the global resolver or the rule's built-in message.
    *
    * @param resolver message resolver to use
    * @return this schema for chaining
@@ -113,6 +132,66 @@ public final class Teki {
   public Teki messages(MessageResolver resolver) {
     this.messageResolver = resolver;
     return this;
+  }
+
+  /**
+   * Sets the global message resolver used by all {@code Teki} instances that do not have a
+   * per-schema resolver registered via {@link #messages(MessageResolver)}.
+   *
+   * <p>Resolution order: per-schema resolver → global resolver → {@link Rule#message(String)}.
+   *
+   * <p>This method is thread-safe.
+   *
+   * @param resolver global resolver to use
+   */
+  public static void setGlobalResolver(MessageResolver resolver) {
+    GLOBAL_RESOLVER.set(resolver);
+  }
+
+  /**
+   * Resets the global message resolver to the built-in English defaults (same as {@link
+   * TekiMessages#defaults()}).
+   */
+  public static void clearGlobalResolver() {
+    GLOBAL_RESOLVER.set(TekiMessages.defaults());
+  }
+
+  /**
+   * Sets the global {@link TekiMessages} used by all {@code Teki} instances that do not have a
+   * per-schema resolver. This is the preferred way to configure messages for most applications.
+   *
+   * <pre>{@code
+   * Teki.setGlobalMessages(
+   *     TekiMessages.defaults()
+   *         .override(TekiErrors.BETWEEN,  "Must be between {min} and {max}")
+   *         .override(TekiErrors.REQUIRED, "{field} is required")
+   *         .fromProperties("i18n/messages_de.properties")
+   * );
+   * }</pre>
+   *
+   * @param messages configured {@link TekiMessages} instance
+   */
+  public static void setGlobalMessages(TekiMessages messages) {
+    GLOBAL_RESOLVER.set(messages);
+  }
+
+  /**
+   * Returns the current global message resolver.
+   *
+   * @return global resolver
+   */
+  public static MessageResolver getGlobalResolver() {
+    return GLOBAL_RESOLVER.get();
+  }
+
+  private MessageResolver effectiveResolver() {
+    MessageResolver instance = this.messageResolver;
+    if (instance == null) return GLOBAL_RESOLVER.get();
+    MessageResolver global = GLOBAL_RESOLVER.get();
+    return (field, type, params) -> {
+      String msg = instance.resolve(field, type, params);
+      return msg != null ? msg : (global != null ? global.resolve(field, type, params) : null);
+    };
   }
 
   // -------------------------------------------------------------------------
@@ -212,8 +291,8 @@ public final class Teki {
   // -------------------------------------------------------------------------
 
   /**
-   * Adds a conditional block: the supplied validatables are only evaluated when the predicate
-   * holds for the object under validation.
+   * Adds a conditional block: the supplied validatables are only evaluated when the predicate holds
+   * for the object under validation.
    *
    * <p>Must only be called on instances created via {@link #fromRules}. Calling this on a cached
    * instance obtained from {@link #from} throws {@link IllegalStateException}.
@@ -237,8 +316,8 @@ public final class Teki {
   }
 
   /**
-   * Adds a conditional block: the supplied validatables are only evaluated when the predicate
-   * holds for the object under validation.
+   * Adds a conditional block: the supplied validatables are only evaluated when the predicate holds
+   * for the object under validation.
    *
    * <p>Must only be called on instances created via {@link #fromRules}. Calling this on a cached
    * instance obtained from {@link #from} throws {@link IllegalStateException}.
@@ -323,6 +402,7 @@ public final class Teki {
     boolean record = object.getClass().isRecord();
     boolean changed = false;
     Map<String, Object> recordChanges = record ? new HashMap<>() : Map.of();
+    MessageResolver resolver = effectiveResolver();
 
     for (Validatable validatable : this.fields) {
       Field field = FieldAccess.findField(fieldSet, validatable.getField());
@@ -330,7 +410,7 @@ public final class Teki {
       Object value = FieldAccess.read(object, field);
       ValidationResult result;
       try {
-        result = validatable.validate("", value, abortEarly, messageResolver);
+        result = validatable.validate("", value, abortEarly, resolver);
       } catch (ValidationException e) {
         // abortEarly=true causes field-level validators to throw instead of returning errors.
         // Catch and convert so check() never throws — that is validate()'s job via orElseThrow().
@@ -357,7 +437,7 @@ public final class Teki {
           Object value = FieldAccess.read(object, field);
           ValidationResult result;
           try {
-            result = validatable.validate("", value, abortEarly, messageResolver);
+            result = validatable.validate("", value, abortEarly, resolver);
           } catch (ValidationException e) {
             for (var error : e.getErrors()) errorBag.add(error);
             return ValidationOutcome.invalid(object, errorBag);
@@ -378,7 +458,10 @@ public final class Teki {
 
     for (CrossFieldConstraint constraint : constraints) {
       if (!constraint.test(object)) {
-        String msg = messageResolver != null ? messageResolver.resolve(constraint.field(), constraint.type()) : null;
+        String msg =
+            resolver != null
+                ? resolver.resolve(constraint.field(), constraint.type(), Map.of())
+                : null;
         if (msg == null) msg = constraint.message();
         errorBag.add(constraint.field(), constraint.type(), msg);
         if (abortEarly) return ValidationOutcome.invalid(object, errorBag);

@@ -52,7 +52,7 @@ public final class NumberRuleBuilder extends RuleBuilder {
    * @return this builder for chaining
    */
   public NumberRuleBuilder between(long min, long max) {
-    this.rules.add(new SizeRule(min, max));
+    this.rules.add(new BetweenRule(min, max));
     return this;
   }
 

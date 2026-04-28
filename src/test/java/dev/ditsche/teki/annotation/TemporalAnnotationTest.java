@@ -63,7 +63,8 @@ class TemporalAnnotationTest {
 
   @Test
   void pastAcceptsPastDate() {
-    assertThat(Teki.from(PastForm.class).check(new PastForm(LocalDate.now().minusDays(1))).isValid())
+    assertThat(
+            Teki.from(PastForm.class).check(new PastForm(LocalDate.now().minusDays(1))).isValid())
         .isTrue();
   }
 
@@ -149,8 +150,7 @@ class TemporalAnnotationTest {
 
   @Test
   void afterAcceptsDateAfterBoundary() {
-    assertThat(
-            Teki.from(AfterForm.class).check(new AfterForm(LocalDate.of(2021, 6, 1))).isValid())
+    assertThat(Teki.from(AfterForm.class).check(new AfterForm(LocalDate.of(2021, 6, 1))).isValid())
         .isTrue();
   }
 

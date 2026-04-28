@@ -25,5 +25,6 @@ public sealed interface Validatable permits ValidationArray, ValidationField, Va
    * @param resolver optional message resolver; {@code null} uses rule default messages
    * @return validation result
    */
-  ValidationResult validate(String parent, Object object, boolean abortEarly, MessageResolver resolver);
+  ValidationResult validate(
+      String parent, Object object, boolean abortEarly, MessageResolver resolver);
 }

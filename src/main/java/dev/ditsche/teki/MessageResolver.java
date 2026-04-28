@@ -1,17 +1,18 @@
 package dev.ditsche.teki;
 
+import java.util.Map;
+
 /**
- * Resolves a human-readable validation message for a given field and error type.
+ * Resolves a human-readable validation message for a given field, error type, and rule params.
  *
- * <p>Register a resolver on a schema via {@link Teki#messages(MessageResolver)} to override the
- * built-in English messages — for example to plug in an i18n bundle:
+ * <p>Set a global resolver via {@link Teki#setGlobalResolver(MessageResolver)} to override built-in
+ * English messages for all schemas — for example to plug in an i18n bundle:
  *
  * <pre>{@code
- * Teki schema = Teki.fromRules(...)
- *     .messages((field, type) -> bundle.getString(type));
+ * Teki.setGlobalResolver((field, type, params) -> bundle.getString(type));
  * }</pre>
  *
- * <p>Return {@code null} to fall back to the rule's built-in message for that entry.
+ * <p>Return {@code null} to fall back to the next resolver in the chain or the rule default.
  *
  * @author Tobias Dittmann
  */
@@ -19,11 +20,13 @@ package dev.ditsche.teki;
 public interface MessageResolver {
 
   /**
-   * Returns a message for the given field and error type, or {@code null} to use the default.
+   * Returns a message for the given field, error type, and rule params, or {@code null} to delegate
+   * to the next resolver in the chain.
    *
    * @param field field name the error is attached to
-   * @param type stable error type key (e.g. {@code "validation.error.format.email"})
-   * @return custom message, or {@code null} to fall back to the rule's built-in message
+   * @param type stable error type key (e.g. {@code "format.email"})
+   * @param params rule-specific parameters (e.g. {@code {"min": 5}} for {@code size.min})
+   * @return custom message, or {@code null} to fall back
    */
-  String resolve(String field, String type);
+  String resolve(String field, String type, Map<String, Object> params);
 }

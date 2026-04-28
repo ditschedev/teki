@@ -106,8 +106,8 @@ public final class ArrayElementRuleBuilder extends RuleBuilder {
    * @param max maximum allowed value
    * @return this builder for chaining
    */
-  public ArrayElementRuleBuilder size(int min, int max) {
-    this.children.add(new SizeRule(min, max));
+  public ArrayElementRuleBuilder between(int min, int max) {
+    this.children.add(new BetweenRule(min, max));
     return this;
   }
 

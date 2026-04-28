@@ -1,7 +1,9 @@
 package dev.ditsche.teki.rule.ruleset;
 
+import dev.ditsche.teki.TekiErrors;
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.RuleResult;
+import java.util.Map;
 
 /**
  * Validates values with the Boolean rule.
@@ -9,6 +11,8 @@ import dev.ditsche.teki.rule.RuleResult;
  * @author Tobias Dittmann
  */
 public final class BooleanRule implements Rule {
+
+  public static final String TYPE_KEY = TekiErrors.BOOLEAN;
 
   private final boolean val;
 
@@ -28,12 +32,12 @@ public final class BooleanRule implements Rule {
   }
 
   @Override
-  public String message(String field) {
-    return String.format("The field \"%s\" needs to be %s", field, val ? "truthy" : "falsy");
+  public Map<String, Object> params() {
+    return Map.of("expected", val);
   }
 
   @Override
   public String getType() {
-    return "type.boolean";
+    return TYPE_KEY;
   }
 }

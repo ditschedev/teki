@@ -1,5 +1,6 @@
 package dev.ditsche.teki.rule.ruleset;
 
+import dev.ditsche.teki.TekiErrors;
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.RuleResult;
 
@@ -9,6 +10,8 @@ import dev.ditsche.teki.rule.RuleResult;
  * @author Tobias Dittmann
  */
 public final class TrimRule implements Rule {
+
+  public static final String TYPE_KEY = TekiErrors.TRIM;
 
   /** Creates a rule instance. */
   public TrimRule() {}
@@ -20,12 +23,7 @@ public final class TrimRule implements Rule {
   }
 
   @Override
-  public String message(String field) {
-    return String.format("The field \"%s\" needs to be a string to be able to trim it", field);
-  }
-
-  @Override
   public String getType() {
-    return "format.trim";
+    return TYPE_KEY;
   }
 }
