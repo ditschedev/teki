@@ -21,7 +21,7 @@ Define field-level constraints on DTOs, records, and nested objects and get stru
 <dependency>
   <groupId>dev.ditsche</groupId>
   <artifactId>teki</artifactId>
-  <version>3.0.0</version>
+  <version>1.0.0</version>
 </dependency>
 ```
 

@@ -10,10 +10,9 @@ import java.util.function.Consumer;
  * Result of a non-throwing validation call ({@link Teki#check}).
  *
  * <p>Carries either a valid (and possibly transformed) value or the errors that prevented
- * validation from passing. Use {@link #isValid()} to branch, or call {@link #orElseThrow()} to
- * convert back to the throwing path.
+ * validation from passing.
  *
- * @param <T> validated object type
+ * @param <T> validated and possibly transformed object type
  * @author Tobias Dittmann
  */
 public final class ValidationOutcome<T> {

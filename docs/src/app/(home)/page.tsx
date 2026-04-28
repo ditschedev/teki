@@ -20,16 +20,16 @@ record SignupRequest(
 
 // Chain rules fluently, then validate the DTO
 Teki signup = Teki.fromRules(
-    string("email").required().email().trim(),
-    string("password").required().min(8),
-    number("age").min(13)
+    string(SignupRequest::email).required().email().trim(),
+    string(SignupRequest::password).required().min(8),
+    number(SignupRequest::age).min(13)
 );
 
 // Or scan annotations from a Java class
-Teki signup = Teki.from(SignupRequest.class);
+Teki schema = Teki.from(SignupRequest.class);
 
 var request = new SignupRequest("ada@example.dev", "super_secret", 21);
-var result = signup.validate(request);
+var result = schema.check(request);
 
 if (!result.isValid()) {
     result.errors().forEach(System.out::println);
