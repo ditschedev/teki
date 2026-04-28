@@ -38,7 +38,7 @@ Teki schema = Teki.fromRules(
     number("age").required().positive()
 );
 
-schema.validate(request);
+Request result = schema.validate(request);
 // or
 ValidationOutcome<Request> result = schema.check(request);
 
