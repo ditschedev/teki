@@ -13,8 +13,6 @@ import java.util.Properties;
  * overriding one or more built-in messages. Templates use <code>{field}</code> for the field name
  * and named placeholders for rule-specific params (e.g. <code>{min}</code>, <code>{max}</code>).
  *
- * <h3>Quick start</h3>
- *
  * <pre>{@code
  * // Override a couple of messages globally:
  * Teki.setGlobalMessages(
@@ -63,6 +61,20 @@ public final class TekiMessages implements MessageResolver {
     m.put(TekiErrors.PATTERN, "The field \"{field}\" has an invalid format");
     m.put(TekiErrors.TRIM, "The field \"{field}\" must be a string");
     m.put(TekiErrors.UUID, "The field \"{field}\" must be a valid UUID");
+    m.put(
+        TekiErrors.PHONE,
+        "The field \"{field}\" must be a valid phone number in E.164 format (e.g. +491511234567)");
+    m.put(
+        TekiErrors.MAC_ADDRESS,
+        "The field \"{field}\" must be a valid MAC address (e.g. AA:BB:CC:DD:EE:FF)");
+    m.put(
+        TekiErrors.SLUG,
+        "The field \"{field}\" must be a valid slug (lowercase letters, digits, and hyphens only)");
+    m.put(TekiErrors.BASE64, "The field \"{field}\" must be a valid base64-encoded string");
+    m.put(
+        TekiErrors.SEMVER,
+        "The field \"{field}\" must be a valid semantic version (e.g. 1.2.3 or 1.0.0-alpha.1)");
+    m.put(TekiErrors.IBAN, "The field \"{field}\" must be a valid IBAN");
 
     m.put(TekiErrors.STRING, "The field \"{field}\" must be a string");
     m.put(TekiErrors.NUMBER, "The field \"{field}\" must be a number");

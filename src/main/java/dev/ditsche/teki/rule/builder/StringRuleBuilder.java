@@ -179,6 +179,77 @@ public final class StringRuleBuilder extends RuleBuilder {
   }
 
   /**
+   * Requires the value to be a valid URL slug.
+   *
+   * @return this builder for chaining
+   */
+  public StringRuleBuilder slug() {
+    this.rules.add(new SlugRule());
+    return this;
+  }
+
+  /**
+   * Requires the value to be a valid standard base64-encoded string.
+   *
+   * @return this builder for chaining
+   */
+  public StringRuleBuilder base64() {
+    this.rules.add(new Base64Rule());
+    return this;
+  }
+
+  /**
+   * Requires the value to be a valid base64-encoded string.
+   *
+   * @param urlSafe when true, validates URL-safe base64 ({@code -_} alphabet, no padding)
+   * @return this builder for chaining
+   */
+  public StringRuleBuilder base64(boolean urlSafe) {
+    this.rules.add(new Base64Rule(urlSafe));
+    return this;
+  }
+
+  /**
+   * Requires the value to be a valid semantic version (semver.org).
+   *
+   * @return this builder for chaining
+   */
+  public StringRuleBuilder semver() {
+    this.rules.add(new SemVerRule());
+    return this;
+  }
+
+  /**
+   * Requires the value to be a valid IBAN.
+   *
+   * @return this builder for chaining
+   */
+  public StringRuleBuilder iban() {
+    this.rules.add(new IbanRule());
+    return this;
+  }
+
+  /**
+   * Requires the value to be a valid MAC address (colon or hyphen separator).
+   *
+   * @return this builder for chaining
+   */
+  public StringRuleBuilder mac() {
+    this.rules.add(new MacAddressRule());
+    return this;
+  }
+
+  /**
+   * Requires the value to be a valid phone number in E.164 format.
+   *
+   * @return this builder for chaining
+   */
+  public StringRuleBuilder phone() {
+    this.rules.add(new PhoneRule());
+    return this;
+  }
+
+  /**
    * Requires the value to be a well-formed UUID.
    *
    * @return this builder for chaining

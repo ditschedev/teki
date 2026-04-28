@@ -65,6 +65,12 @@ In this example, `displayName` may be omitted. If it is present, Teki trims it a
 | `@Before("...")`                 | Requires a date before a fixed boundary  |
 | `@After("...")`                  | Requires a date after a fixed boundary   |
 | `@Uuid`                          | Validates UUID format                    |
+| `@Phone`                         | Validates phone numbers (E.164 format)   |
+| `@MacAddress`                    | Validates MAC addresses                  |
+| `@Slug`                          | Validates URL slugs                      |
+| `@Base64`                        | Validates base64 strings                 |
+| `@SemVer`                        | Validates semantic versions              |
+| `@Iban`                          | Validates IBANs                          |
 | `@NotBlank`                      | Rejects null and whitespace-only strings |
 | `@OneOf({"..."})`                | Requires the value to be in a fixed set  |
 | `@Positive`                      | Requires a number > zero                 |

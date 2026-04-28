@@ -14,8 +14,6 @@ import java.util.Map;
  */
 public final class BetweenRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.BETWEEN;
-
   private final long min;
   private final long max;
 
@@ -78,6 +76,6 @@ public final class BetweenRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.BETWEEN;
   }
 }

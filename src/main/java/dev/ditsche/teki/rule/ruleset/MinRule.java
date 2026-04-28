@@ -14,8 +14,6 @@ import java.util.Map;
  */
 public final class MinRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.MIN;
-
   private final long min;
 
   /**
@@ -56,6 +54,6 @@ public final class MinRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.MIN;
   }
 }

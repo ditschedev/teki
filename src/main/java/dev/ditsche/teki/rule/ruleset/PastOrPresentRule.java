@@ -12,8 +12,6 @@ import java.time.Instant;
  */
 public final class PastOrPresentRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.PAST_OR_PRESENT;
-
   @Override
   public RuleResult test(Object value) {
     if (value == null) return RuleResult.reject();
@@ -24,6 +22,6 @@ public final class PastOrPresentRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.PAST_OR_PRESENT;
   }
 }

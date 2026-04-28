@@ -138,8 +138,6 @@ public final class Teki {
    * Sets the global message resolver used by all {@code Teki} instances that do not have a
    * per-schema resolver registered via {@link #messages(MessageResolver)}.
    *
-   * <p>Resolution order: per-schema resolver → global resolver → {@link Rule#message(String)}.
-   *
    * <p>This method is thread-safe.
    *
    * @param resolver global resolver to use

@@ -12,8 +12,6 @@ import java.util.regex.Pattern;
  */
 public final class AlphaNumericRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.ALPHA_NUMERIC;
-
   /** Creates a rule instance. */
   public AlphaNumericRule() {}
 
@@ -28,6 +26,6 @@ public final class AlphaNumericRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.ALPHA_NUMERIC;
   }
 }

@@ -1,0 +1,32 @@
+---
+title: IBAN
+description: Validate International Bank Account Numbers.
+---
+
+Use `iban()` on string fields to require a valid IBAN.
+
+```java
+Teki schema = Teki.fromRules(
+    string("iban").required().iban()
+);
+```
+
+Spaces are stripped before validation, so formatted IBANs like `DE89 3704 0044 0532 0130 00` are accepted alongside their compact form `DE89370400440532013000`.
+
+Validation runs the full ISO 7064 MOD-97-10 check, so transposed or mutated digits are reliably rejected.
+
+## Available on
+
+- `string(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.Iban;
+
+public class PaymentRequest {
+    @Required
+    @Iban
+    private String iban;
+}
+```

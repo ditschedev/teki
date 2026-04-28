@@ -12,8 +12,6 @@ import java.util.regex.Pattern;
  */
 public final class PatternRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.PATTERN;
-
   private final Pattern compiled;
 
   /**
@@ -34,6 +32,6 @@ public final class PatternRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.PATTERN;
   }
 }

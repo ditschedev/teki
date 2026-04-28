@@ -6,18 +6,21 @@ import dev.ditsche.teki.rule.RuleResult;
 import java.util.regex.Pattern;
 
 /**
- * Validates values with the Url rule.
+ * Validates values with the Semantic Version rule (semver.org).
  *
  * @author Tobias Dittmann
  */
-public final class UrlRule implements Rule {
+public final class SemVerRule implements Rule {
 
   /** Creates a rule instance. */
-  public UrlRule() {}
+  public SemVerRule() {}
 
   private static final Pattern PATTERN =
       Pattern.compile(
-          "^(ht|f)tps?://[0-9a-zA-Z]([-.\\w]*[0-9a-zA-Z])*(:\\d+)?(/?)([a-zA-Z0-9\\-.?,:'/\\\\+=&;%$#_]*)?$");
+          "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)"
+              + "(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)"
+              + "(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))"
+              + "?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$");
 
   @Override
   public RuleResult test(Object value) {
@@ -28,6 +31,6 @@ public final class UrlRule implements Rule {
 
   @Override
   public String getType() {
-    return TekiErrors.URL;
+    return TekiErrors.SEMVER;
   }
 }

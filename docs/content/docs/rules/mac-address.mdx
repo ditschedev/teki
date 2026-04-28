@@ -1,0 +1,38 @@
+---
+title: MAC Address
+description: Validate MAC addresses with colon or hyphen separators.
+---
+
+Use `mac()` on string fields to require a valid MAC address.
+
+```java
+Teki schema = Teki.fromRules(
+    string("mac").required().mac()
+);
+```
+
+Both colon and hyphen separators are accepted, and matching is case-insensitive. Mixed separators within a single address are rejected.
+
+| Value               | Valid                  |
+| ------------------- | ---------------------- |
+| `AA:BB:CC:DD:EE:FF` | yes                    |
+| `aa-bb-cc-dd-ee-ff` | yes                    |
+| `AA:BB-CC:DD:EE:FF` | no — mixed separators  |
+| `AA:BB:CC:DD:EE`    | no — too few octets    |
+| `GG:BB:CC:DD:EE:FF` | no — non-hex character |
+
+## Available on
+
+- `string(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.MacAddress;
+
+public class DeviceRequest {
+    @Required
+    @MacAddress
+    private String mac;
+}
+```

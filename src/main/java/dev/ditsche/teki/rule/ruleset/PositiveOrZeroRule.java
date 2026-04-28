@@ -12,8 +12,6 @@ import java.math.BigDecimal;
  */
 public final class PositiveOrZeroRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.POSITIVE_OR_ZERO;
-
   @Override
   public RuleResult test(Object value) {
     if (value == null) return RuleResult.reject();
@@ -25,6 +23,6 @@ public final class PositiveOrZeroRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.POSITIVE_OR_ZERO;
   }
 }

@@ -14,8 +14,6 @@ import java.util.Map;
  */
 public final class LengthRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.LENGTH;
-
   private final long length;
 
   /**
@@ -56,6 +54,6 @@ public final class LengthRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.LENGTH;
   }
 }

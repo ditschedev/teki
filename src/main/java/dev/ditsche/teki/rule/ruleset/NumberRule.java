@@ -11,8 +11,6 @@ import dev.ditsche.teki.rule.RuleResult;
  */
 public final class NumberRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.NUMBER;
-
   /** Creates a rule instance. */
   public NumberRule() {}
 
@@ -26,6 +24,6 @@ public final class NumberRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.NUMBER;
   }
 }

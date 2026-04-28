@@ -6,18 +6,18 @@ import dev.ditsche.teki.rule.RuleResult;
 import java.util.regex.Pattern;
 
 /**
- * Validates values with the Url rule.
+ * Validates values with the MAC address rule.
  *
  * @author Tobias Dittmann
  */
-public final class UrlRule implements Rule {
+public final class MacAddressRule implements Rule {
 
   /** Creates a rule instance. */
-  public UrlRule() {}
+  public MacAddressRule() {}
 
+  // Back-reference \2 ensures separator is consistent throughout
   private static final Pattern PATTERN =
-      Pattern.compile(
-          "^(ht|f)tps?://[0-9a-zA-Z]([-.\\w]*[0-9a-zA-Z])*(:\\d+)?(/?)([a-zA-Z0-9\\-.?,:'/\\\\+=&;%$#_]*)?$");
+      Pattern.compile("^([0-9A-Fa-f]{2}([:-]))(?:[0-9A-Fa-f]{2}\\2){4}[0-9A-Fa-f]{2}$");
 
   @Override
   public RuleResult test(Object value) {
@@ -28,6 +28,6 @@ public final class UrlRule implements Rule {
 
   @Override
   public String getType() {
-    return TekiErrors.URL;
+    return TekiErrors.MAC_ADDRESS;
   }
 }

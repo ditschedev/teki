@@ -11,8 +11,6 @@ import dev.ditsche.teki.rule.RuleResult;
  */
 public final class ArrayRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.ARRAY;
-
   /** Creates a rule instance. */
   public ArrayRule() {}
 
@@ -25,6 +23,6 @@ public final class ArrayRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.ARRAY;
   }
 }

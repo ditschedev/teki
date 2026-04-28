@@ -12,8 +12,6 @@ import java.util.Map;
  */
 public final class DefaultRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.UNASSIGNABLE;
-
   private final Object defaultValue;
 
   /**
@@ -41,6 +39,6 @@ public final class DefaultRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.UNASSIGNABLE;
   }
 }

@@ -12,8 +12,6 @@ import java.util.Map;
  */
 public final class BooleanRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.BOOLEAN;
-
   private final boolean val;
 
   /**
@@ -38,6 +36,6 @@ public final class BooleanRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.BOOLEAN;
   }
 }

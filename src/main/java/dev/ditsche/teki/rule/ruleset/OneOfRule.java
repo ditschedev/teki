@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
  */
 public final class OneOfRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.ONE_OF;
-
   private final Set<String> allowed;
 
   public OneOfRule(String... allowed) {
@@ -41,6 +39,6 @@ public final class OneOfRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.ONE_OF;
   }
 }

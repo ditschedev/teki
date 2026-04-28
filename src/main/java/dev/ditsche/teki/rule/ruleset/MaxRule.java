@@ -14,8 +14,6 @@ import java.util.Map;
  */
 public final class MaxRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.MAX;
-
   private final long max;
 
   /**
@@ -56,6 +54,6 @@ public final class MaxRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.MAX;
   }
 }

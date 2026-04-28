@@ -1,0 +1,38 @@
+---
+title: Base64
+description: Validate base64-encoded strings in standard or URL-safe form.
+---
+
+Use `base64()` on string fields to require a valid base64-encoded string.
+
+```java
+Teki schema = Teki.fromRules(
+    string("payload").required().base64()
+);
+```
+
+Pass `true` for the URL-safe variant (`-_` alphabet, no padding):
+
+```java
+string("token").required().base64(true)
+```
+
+An empty string is treated as valid base64. For the standard variant, the string length must be a multiple of four. Mixed alphabets are rejected — a standard base64 string may not contain `-` or `_`, and a URL-safe string may not contain `+` or `/`.
+
+## Available on
+
+- `string(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.Base64;
+
+public class UploadRequest {
+    @Base64
+    private String payload;
+
+    @Base64(urlSafe = true)
+    private String token;
+}
+```

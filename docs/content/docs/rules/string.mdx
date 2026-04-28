@@ -26,6 +26,7 @@ Teki schema = Teki.fromRules(
 | `ip()`                 | Validate IPv4 or IPv6 addresses           |
 | `ipv4()`               | Validate IPv4 addresses only              |
 | `ipv6()`               | Validate IPv6 addresses only              |
+| `mac()`                | Validate MAC addresses                    |
 | `creditCard()`         | Validate credit card numbers              |
 | `min(int)`             | Require a minimum length                  |
 | `max(int)`             | Require a maximum length                  |
@@ -33,6 +34,12 @@ Teki schema = Teki.fromRules(
 | `length(int)`          | Require an exact length                   |
 | `trim()`               | Trim surrounding whitespace               |
 | `uuid()`               | Validate UUID format                      |
+| `phone()`              | Validate phone numbers (E.164 format)     |
+| `slug()`               | Validate URL slugs                        |
+| `base64()`             | Validate standard base64                  |
+| `base64(boolean)`      | Validate base64 (standard or URL-safe)    |
+| `semver()`             | Validate semantic versions                |
+| `iban()`               | Validate IBANs                            |
 | `notBlank()`           | Reject null and whitespace-only strings   |
 | `oneOf(String...)`     | Require the value to be in a fixed set    |
 | `defaultValue(String)` | Fill a missing value                      |
@@ -40,4 +47,4 @@ Teki schema = Teki.fromRules(
 
 ## Annotation equivalent
 
-String fields can use annotations such as `@Required`, `@Email`, `@Url`, `@Pattern`, `@Between`, `@Trim`, `@Default`, `@Uuid`, `@NotBlank`, and `@OneOf`.
+String fields can use annotations such as `@Required`, `@Email`, `@Url`, `@Pattern`, `@Between`, `@Trim`, `@Default`, `@Uuid`, `@Phone`, `@MacAddress`, `@Slug`, `@Base64`, `@SemVer`, `@Iban`, `@NotBlank`, and `@OneOf`.

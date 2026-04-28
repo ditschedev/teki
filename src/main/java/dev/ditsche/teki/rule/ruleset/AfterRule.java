@@ -14,8 +14,6 @@ import java.util.Map;
  */
 public final class AfterRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.AFTER;
-
   private final Instant boundary;
 
   public AfterRule(Instant boundary) {
@@ -41,6 +39,6 @@ public final class AfterRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.AFTER;
   }
 }

@@ -13,8 +13,6 @@ import java.util.UUID;
  */
 public final class UuidRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.UUID;
-
   private final int version;
 
   /** Accepts any valid UUID. */
@@ -53,6 +51,6 @@ public final class UuidRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.UUID;
   }
 }

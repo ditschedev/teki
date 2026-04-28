@@ -1,0 +1,39 @@
+---
+title: Slug
+description: Validate URL-friendly slugs.
+---
+
+Use `slug()` on string fields to require a valid URL slug.
+
+```java
+Teki schema = Teki.fromRules(
+    string("slug").required().slug()
+);
+```
+
+A valid slug contains only lowercase letters, digits, and single hyphens between words. No leading or trailing hyphens, no consecutive hyphens, no uppercase.
+
+| Value          | Valid                    |
+| -------------- | ------------------------ |
+| `my-blog-post` | yes                      |
+| `product-123`  | yes                      |
+| `v2`           | yes                      |
+| `My-Post`      | no — uppercase           |
+| `--bad`        | no — consecutive hyphens |
+| `trailing-`    | no — trailing hyphen     |
+
+## Available on
+
+- `string(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.Slug;
+
+public class ArticleRequest {
+    @Required
+    @Slug
+    private String slug;
+}
+```

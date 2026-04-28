@@ -89,6 +89,30 @@ final class AnnotationScanner {
       rules.add(new CreditCardRule());
       hasConstraints = true;
     }
+    if (field.isAnnotationPresent(Phone.class)) {
+      rules.add(new PhoneRule());
+      hasConstraints = true;
+    }
+    if (field.isAnnotationPresent(MacAddress.class)) {
+      rules.add(new MacAddressRule());
+      hasConstraints = true;
+    }
+    if (field.isAnnotationPresent(Slug.class)) {
+      rules.add(new SlugRule());
+      hasConstraints = true;
+    }
+    if (field.isAnnotationPresent(Base64.class)) {
+      rules.add(new Base64Rule(field.getAnnotation(Base64.class).urlSafe()));
+      hasConstraints = true;
+    }
+    if (field.isAnnotationPresent(SemVer.class)) {
+      rules.add(new SemVerRule());
+      hasConstraints = true;
+    }
+    if (field.isAnnotationPresent(Iban.class)) {
+      rules.add(new IbanRule());
+      hasConstraints = true;
+    }
     if (field.isAnnotationPresent(Uuid.class)) {
       rules.add(uuidRule(field.getAnnotation(Uuid.class)));
       hasConstraints = true;
@@ -273,6 +297,12 @@ final class AnnotationScanner {
     if (a instanceof IpAddress ip) return ipAddressRule(ip);
     if (a instanceof AlphaNumeric) return new AlphaNumericRule();
     if (a instanceof CreditCard) return new CreditCardRule();
+    if (a instanceof Phone) return new PhoneRule();
+    if (a instanceof MacAddress) return new MacAddressRule();
+    if (a instanceof Slug) return new SlugRule();
+    if (a instanceof Base64 b) return new Base64Rule(b.urlSafe());
+    if (a instanceof SemVer) return new SemVerRule();
+    if (a instanceof Iban) return new IbanRule();
     if (a instanceof Uuid u) return uuidRule(u);
     if (a instanceof NotBlank) return new NotBlankRule();
     if (a instanceof OneOf o) return new OneOfRule(o);

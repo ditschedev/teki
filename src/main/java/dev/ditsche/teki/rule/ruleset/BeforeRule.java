@@ -14,8 +14,6 @@ import java.util.Map;
  */
 public final class BeforeRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.BEFORE;
-
   private final Instant boundary;
 
   public BeforeRule(Instant boundary) {
@@ -41,6 +39,6 @@ public final class BeforeRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.BEFORE;
   }
 }

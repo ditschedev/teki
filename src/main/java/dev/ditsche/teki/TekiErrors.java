@@ -28,6 +28,12 @@ public final class TekiErrors {
   public static final String PATTERN = "format.pattern";
   public static final String TRIM = "format.trim";
   public static final String UUID = "format.uuid";
+  public static final String PHONE = "format.phone";
+  public static final String MAC_ADDRESS = "format.mac";
+  public static final String SLUG = "format.slug";
+  public static final String BASE64 = "format.base64";
+  public static final String SEMVER = "format.semver";
+  public static final String IBAN = "format.iban";
 
   // --- type ---
 
@@ -55,7 +61,7 @@ public final class TekiErrors {
   public static final String MIN = "size.min";
   public static final String MAX = "size.max";
   public static final String LENGTH = "size.length";
-  public static final String BETWEEN = "between";
+  public static final String BETWEEN = "size.between";
 
   // --- temporal ---
 

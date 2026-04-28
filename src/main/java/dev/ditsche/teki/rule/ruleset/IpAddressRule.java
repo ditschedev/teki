@@ -12,8 +12,6 @@ import java.util.regex.Pattern;
  */
 public final class IpAddressRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.IP_ADDRESS;
-
   private final int version; // 0 = any, 4 = IPv4 only, 6 = IPv6 only
 
   /** Accepts any valid IPv4 or IPv6 address. */
@@ -73,6 +71,6 @@ public final class IpAddressRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.IP_ADDRESS;
   }
 }

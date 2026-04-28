@@ -11,8 +11,6 @@ import dev.ditsche.teki.rule.RuleResult;
  */
 public final class NotBlankRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.NOT_BLANK;
-
   @Override
   public RuleResult test(Object value) {
     if (value == null) return RuleResult.reject();
@@ -22,6 +20,6 @@ public final class NotBlankRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.NOT_BLANK;
   }
 }

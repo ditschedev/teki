@@ -13,8 +13,6 @@ import java.util.Map;
  */
 public final class RequiredRule implements Rule {
 
-  public static final String TYPE_KEY = TekiErrors.REQUIRED;
-
   /** Creates a rule instance. */
   public RequiredRule() {}
 
@@ -38,6 +36,6 @@ public final class RequiredRule implements Rule {
 
   @Override
   public String getType() {
-    return TYPE_KEY;
+    return TekiErrors.REQUIRED;
   }
 }
