@@ -64,10 +64,14 @@ In this example, `displayName` may be omitted. If it is present, Teki trims it a
 | `@FutureOrPresent`               | Requires a date in the future or now     |
 | `@Before("...")`                 | Requires a date before a fixed boundary  |
 | `@After("...")`                  | Requires a date after a fixed boundary   |
+| `@TruncateTo(ChronoUnit)`        | Truncates to a unit, resolves as `Instant`          |
+| `@ToUtc`                         | Normalizes to `Instant` in UTC                      |
+| `@ToZone("...")`                 | Converts to `ZonedDateTime` in the given timezone   |
 | `@Uuid`                          | Validates UUID format                    |
 | `@Phone`                         | Validates phone numbers (E.164 format)   |
 | `@MacAddress`                    | Validates MAC addresses                  |
 | `@Slug`                          | Validates URL slugs                      |
+| `@Slugify`                       | Transforms a string into a URL slug      |
 | `@Base64`                        | Validates base64 strings                 |
 | `@SemVer`                        | Validates semantic versions              |
 | `@Iban`                          | Validates IBANs                          |

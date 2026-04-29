@@ -189,6 +189,17 @@ public final class StringRuleBuilder extends RuleBuilder {
   }
 
   /**
+   * Transforms the value into a URL-safe slug (lowercase, diacritics stripped, non-alphanumeric
+   * runs replaced with hyphens). An input that produces an empty slug is rejected.
+   *
+   * @return this builder for chaining
+   */
+  public StringRuleBuilder slugify() {
+    this.rules.add(new SlugifyRule());
+    return this;
+  }
+
+  /**
    * Requires the value to be a valid standard base64-encoded string.
    *
    * @return this builder for chaining

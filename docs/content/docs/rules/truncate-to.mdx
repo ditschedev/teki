@@ -1,0 +1,51 @@
+---
+title: Truncate To
+description: Truncate a temporal value to a given unit and normalize it to an Instant.
+---
+
+Use `truncateTo(ChronoUnit)` to strip sub-unit precision from a temporal field and resolve it as a `java.time.Instant`.
+
+```java
+import java.time.temporal.ChronoUnit;
+import static dev.ditsche.teki.rule.builder.Rules.*;
+
+Teki schema = Teki.fromRules(
+    temporal("scheduledAt").required().truncateTo(ChronoUnit.DAYS),
+    temporal("recordedAt").truncateTo(ChronoUnit.HOURS)
+);
+```
+
+After validation succeeds, Teki writes the truncated `Instant` back to the field.
+
+## Supported units
+
+`truncateTo` delegates to `Instant.truncatedTo(ChronoUnit)`. The following units are supported:
+
+| Unit         | Example result for `2024-06-15T14:32:55.123Z` |
+| ------------ | --------------------------------------------- |
+| `NANOS`      | `2024-06-15T14:32:55.123Z`                    |
+| `MICROS`     | `2024-06-15T14:32:55.123Z`                    |
+| `MILLIS`     | `2024-06-15T14:32:55.123Z`                    |
+| `SECONDS`    | `2024-06-15T14:32:55Z`                        |
+| `MINUTES`    | `2024-06-15T14:32:00Z`                        |
+| `HOURS`      | `2024-06-15T14:00:00Z`                        |
+| `HALF_DAYS`  | `2024-06-15T12:00:00Z`                        |
+| `DAYS`       | `2024-06-15T00:00:00Z`                        |
+
+<Callout type="warn">Units larger than `DAYS` (`WEEKS`, `MONTHS`, `YEARS`) are not supported by `Instant.truncatedTo` and will cause validation to fail.</Callout>
+
+## Available on
+
+- `temporal(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.TruncateTo;
+import java.time.temporal.ChronoUnit;
+
+public class EventRequest {
+    @TruncateTo(ChronoUnit.DAYS)
+    private ZonedDateTime scheduledAt;
+}
+```

@@ -31,6 +31,7 @@ public final class TekiErrors {
   public static final String PHONE = "format.phone";
   public static final String MAC_ADDRESS = "format.mac";
   public static final String SLUG = "format.slug";
+  public static final String SLUGIFY = "format.slugify";
   public static final String BASE64 = "format.base64";
   public static final String SEMVER = "format.semver";
   public static final String IBAN = "format.iban";
@@ -71,4 +72,7 @@ public final class TekiErrors {
   public static final String FUTURE_OR_PRESENT = "temporal.future_or_present";
   public static final String BEFORE = "temporal.before";
   public static final String AFTER = "temporal.after";
+  public static final String TRUNCATE_TO = "temporal.truncate_to";
+  public static final String TO_UTC = "temporal.to_utc";
+  public static final String TO_ZONE = "temporal.to_zone";
 }

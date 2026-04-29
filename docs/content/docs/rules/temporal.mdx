@@ -27,25 +27,31 @@ Teki schema = Teki.fromRules(
 
 ## Available methods
 
-| Method              | Purpose                                         |
-| ------------------- | ----------------------------------------------- |
-| `required()`        | Reject missing values                           |
-| `optional()`        | Skip validation when the value is missing       |
-| `past()`            | Require a date strictly in the past             |
-| `future()`          | Require a date strictly in the future           |
-| `pastOrPresent()`   | Require a date in the past or equal to now      |
-| `futureOrPresent()` | Require a date in the future or equal to now    |
-| `before(Instant)`   | Require a date strictly before a fixed boundary |
-| `after(Instant)`    | Require a date strictly after a fixed boundary  |
-| `custom(Rule)`      | Attach a custom rule                            |
+| Method                   | Purpose                                                   |
+| ------------------------ | --------------------------------------------------------- |
+| `required()`             | Reject missing values                                     |
+| `optional()`             | Skip validation when the value is missing                 |
+| `past()`                 | Require a date strictly in the past                       |
+| `future()`               | Require a date strictly in the future                     |
+| `pastOrPresent()`        | Require a date in the past or equal to now                |
+| `futureOrPresent()`      | Require a date in the future or equal to now              |
+| `before(Instant)`        | Require a date strictly before a fixed boundary           |
+| `after(Instant)`         | Require a date strictly after a fixed boundary            |
+| `truncateTo(ChronoUnit)` | Truncate the value to a unit and resolve as `Instant`     |
+| `toUtc()`                | Normalize the value to its `Instant` representation       |
+| `toZone(ZoneId)`         | Convert the value to a `ZonedDateTime` in the given zone  |
+| `custom(Rule)`           | Attach a custom rule                                      |
 
 ## Annotation equivalent
 
-Temporal fields can use `@Past`, `@Future`, `@PastOrPresent`, `@FutureOrPresent`, `@Before`, and `@After`.
+Temporal fields can use `@Past`, `@Future`, `@PastOrPresent`, `@FutureOrPresent`, `@Before`, `@After`, `@TruncateTo`, `@ToUtc`, and `@ToZone`.
 
 ```java
 import dev.ditsche.teki.annotation.Future;
 import dev.ditsche.teki.annotation.Past;
+import dev.ditsche.teki.annotation.TruncateTo;
+import dev.ditsche.teki.annotation.ToUtc;
+import java.time.temporal.ChronoUnit;
 
 public class EventRequest {
     @Past
@@ -56,5 +62,14 @@ public class EventRequest {
 
     @Before("2030-01-01")
     private ZonedDateTime deadline;
+
+    @TruncateTo(ChronoUnit.DAYS)
+    private ZonedDateTime scheduledAt;
+
+    @ToUtc
+    private OffsetDateTime publishedAt;
+
+    @ToZone("America/New_York")
+    private Instant meetingAt;
 }
 ```

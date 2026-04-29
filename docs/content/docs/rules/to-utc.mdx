@@ -1,0 +1,44 @@
+---
+title: To UTC
+description: Normalize a temporal value to its Instant representation in UTC.
+---
+
+Use `toUtc()` to convert any supported temporal type to a `java.time.Instant` and write it back to the field.
+
+```java
+import static dev.ditsche.teki.rule.builder.Rules.*;
+
+Teki schema = Teki.fromRules(
+    temporal("publishedAt").required().toUtc(),
+    temporal("updatedAt").toUtc()
+);
+```
+
+All timezone and offset information is applied before the conversion, so the resulting `Instant` represents the same point in time as the original value.
+
+## Input types
+
+`toUtc()` accepts any temporal type that `temporal()` recognizes:
+
+- `java.time.Instant` — passed through unchanged
+- `java.time.ZonedDateTime` — offset applied, converted to `Instant`
+- `java.time.OffsetDateTime` — offset applied, converted to `Instant`
+- `java.time.LocalDateTime` — interpreted in the JVM default timezone, then converted
+- `java.time.LocalDate` — start of day in the JVM default timezone, then converted
+- `java.util.Date` — converted directly
+- `java.util.Calendar` — converted directly
+
+## Available on
+
+- `temporal(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.ToUtc;
+
+public class ArticleRequest {
+    @ToUtc
+    private OffsetDateTime publishedAt;
+}
+```

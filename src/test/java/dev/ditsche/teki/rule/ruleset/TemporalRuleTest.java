@@ -6,8 +6,10 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import org.junit.jupiter.api.Test;
@@ -247,5 +249,176 @@ class TemporalRuleTest {
   @Test
   void afterRejectsNull() {
     assertThat(new AfterRule(BOUNDARY).test(null).passed()).isFalse();
+  }
+
+  // -------------------------------------------------------------------------
+  // TruncateToRule
+  // -------------------------------------------------------------------------
+
+  @Test
+  void truncateToTruncatesInstantToDay() {
+    Instant input = Instant.parse("2024-06-15T14:32:55Z");
+    var result = new TruncateToRule(ChronoUnit.DAYS).test(input);
+    assertThat(result.passed()).isTrue();
+    assertThat(result.changed()).isTrue();
+    assertThat(result.value()).isEqualTo(Instant.parse("2024-06-15T00:00:00Z"));
+  }
+
+  @Test
+  void truncateToTruncatesInstantToHour() {
+    Instant input = Instant.parse("2024-06-15T14:32:55Z");
+    var result = new TruncateToRule(ChronoUnit.HOURS).test(input);
+    assertThat(result.passed()).isTrue();
+    assertThat(result.value()).isEqualTo(Instant.parse("2024-06-15T14:00:00Z"));
+  }
+
+  @Test
+  void truncateToTruncatesInstantToMinutes() {
+    Instant input = Instant.parse("2024-06-15T14:32:55Z");
+    var result = new TruncateToRule(ChronoUnit.MINUTES).test(input);
+    assertThat(result.passed()).isTrue();
+    assertThat(result.value()).isEqualTo(Instant.parse("2024-06-15T14:32:00Z"));
+  }
+
+  @Test
+  void truncateToAcceptsLocalDateTime() {
+    var result = new TruncateToRule(ChronoUnit.DAYS).test(LocalDateTime.of(2024, 6, 15, 14, 32));
+    assertThat(result.passed()).isTrue();
+    assertThat(result.changed()).isTrue();
+  }
+
+  @Test
+  void truncateToAcceptsZonedDateTime() {
+    var input = ZonedDateTime.of(2024, 6, 15, 14, 32, 0, 0, ZoneOffset.UTC);
+    var result = new TruncateToRule(ChronoUnit.HOURS).test(input);
+    assertThat(result.passed()).isTrue();
+    assertThat(result.value()).isEqualTo(Instant.parse("2024-06-15T14:00:00Z"));
+  }
+
+  @Test
+  void truncateToRejectsNull() {
+    assertThat(new TruncateToRule(ChronoUnit.DAYS).test(null).passed()).isFalse();
+  }
+
+  @Test
+  void truncateToRejectsNonTemporalType() {
+    assertThat(new TruncateToRule(ChronoUnit.DAYS).test("2024-01-01").passed()).isFalse();
+  }
+
+  @Test
+  void truncateToRejectsUnsupportedUnit() {
+    assertThat(new TruncateToRule(ChronoUnit.MONTHS).test(Instant.now()).passed()).isFalse();
+  }
+
+  // -------------------------------------------------------------------------
+  // ToUtcRule
+  // -------------------------------------------------------------------------
+
+  @Test
+  void toUtcConvertsZonedDateTimeToInstant() {
+    ZonedDateTime input = ZonedDateTime.of(2024, 6, 15, 10, 0, 0, 0, ZoneOffset.ofHours(2));
+    var result = new ToUtcRule().test(input);
+    assertThat(result.passed()).isTrue();
+    assertThat(result.changed()).isTrue();
+    assertThat(result.value()).isEqualTo(Instant.parse("2024-06-15T08:00:00Z"));
+  }
+
+  @Test
+  void toUtcConvertsLocalDateTimeToInstant() {
+    var result = new ToUtcRule().test(LocalDateTime.of(2024, 6, 15, 0, 0));
+    assertThat(result.passed()).isTrue();
+    assertThat(result.value()).isInstanceOf(Instant.class);
+  }
+
+  @Test
+  void toUtcPassesThroughInstant() {
+    Instant input = Instant.parse("2024-06-15T08:00:00Z");
+    var result = new ToUtcRule().test(input);
+    assertThat(result.passed()).isTrue();
+    assertThat(result.value()).isEqualTo(input);
+  }
+
+  @Test
+  void toUtcConvertsLegacyDate() {
+    Date input = new Date(0);
+    var result = new ToUtcRule().test(input);
+    assertThat(result.passed()).isTrue();
+    assertThat(result.value()).isEqualTo(Instant.EPOCH);
+  }
+
+  @Test
+  void toUtcRejectsNull() {
+    assertThat(new ToUtcRule().test(null).passed()).isFalse();
+  }
+
+  @Test
+  void toUtcRejectsNonTemporalType() {
+    assertThat(new ToUtcRule().test("2024-01-01").passed()).isFalse();
+  }
+
+  // -------------------------------------------------------------------------
+  // ToZoneRule
+  // -------------------------------------------------------------------------
+
+  private static final ZoneId BERLIN = ZoneId.of("Europe/Berlin");
+  private static final ZoneId NEW_YORK = ZoneId.of("America/New_York");
+
+  @Test
+  void toZoneConvertsInstantToZonedDateTime() {
+    Instant input = Instant.parse("2024-06-15T12:00:00Z");
+    var result = new ToZoneRule(BERLIN).test(input);
+    assertThat(result.passed()).isTrue();
+    assertThat(result.changed()).isTrue();
+    assertThat(result.value()).isInstanceOf(ZonedDateTime.class);
+    ZonedDateTime zdt = (ZonedDateTime) result.value();
+    assertThat(zdt.getZone()).isEqualTo(BERLIN);
+    assertThat(zdt.toInstant()).isEqualTo(input);
+  }
+
+  @Test
+  void toZonePreservesPointInTime() {
+    Instant input = Instant.parse("2024-01-15T06:00:00Z");
+    var berlinResult = new ToZoneRule(BERLIN).test(input);
+    var nyResult = new ToZoneRule(NEW_YORK).test(input);
+    ZonedDateTime berlin = (ZonedDateTime) berlinResult.value();
+    ZonedDateTime newYork = (ZonedDateTime) nyResult.value();
+    assertThat(berlin.toInstant()).isEqualTo(newYork.toInstant());
+    assertThat(berlin.getZone()).isEqualTo(BERLIN);
+    assertThat(newYork.getZone()).isEqualTo(NEW_YORK);
+  }
+
+  @Test
+  void toZoneAcceptsZonedDateTime() {
+    ZonedDateTime input = ZonedDateTime.of(2024, 6, 15, 10, 0, 0, 0, ZoneOffset.UTC);
+    var result = new ToZoneRule(BERLIN).test(input);
+    assertThat(result.passed()).isTrue();
+    ZonedDateTime zdt = (ZonedDateTime) result.value();
+    assertThat(zdt.getZone()).isEqualTo(BERLIN);
+  }
+
+  @Test
+  void toZoneAcceptsLocalDateTime() {
+    var result = new ToZoneRule(BERLIN).test(LocalDateTime.of(2024, 6, 15, 12, 0));
+    assertThat(result.passed()).isTrue();
+    assertThat(result.value()).isInstanceOf(ZonedDateTime.class);
+  }
+
+  @Test
+  void toZoneAcceptsLegacyDate() {
+    var result = new ToZoneRule(NEW_YORK).test(new Date(0));
+    assertThat(result.passed()).isTrue();
+    ZonedDateTime zdt = (ZonedDateTime) result.value();
+    assertThat(zdt.toInstant()).isEqualTo(Instant.EPOCH);
+    assertThat(zdt.getZone()).isEqualTo(NEW_YORK);
+  }
+
+  @Test
+  void toZoneRejectsNull() {
+    assertThat(new ToZoneRule(BERLIN).test(null).passed()).isFalse();
+  }
+
+  @Test
+  void toZoneRejectsNonTemporalType() {
+    assertThat(new ToZoneRule(BERLIN).test("2024-01-01").passed()).isFalse();
   }
 }

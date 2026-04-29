@@ -5,6 +5,8 @@ import dev.ditsche.teki.rule.ruleset.*;
 import dev.ditsche.teki.validation.Validatable;
 import dev.ditsche.teki.validation.ValidationField;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
 
 /**
@@ -82,6 +84,39 @@ public final class TemporalRuleBuilder extends RuleBuilder {
    */
   public TemporalRuleBuilder after(Instant boundary) {
     this.rules.add(new AfterRule(boundary));
+    return this;
+  }
+
+  /**
+   * Truncates the temporal value to the given {@link ChronoUnit} and resolves the field as an
+   * {@link java.time.Instant}. Supports units up to {@code DAYS}.
+   *
+   * @param unit granularity to truncate to
+   * @return this builder for chaining
+   */
+  public TemporalRuleBuilder truncateTo(ChronoUnit unit) {
+    this.rules.add(new TruncateToRule(unit));
+    return this;
+  }
+
+  /**
+   * Normalizes the temporal value to its {@link java.time.Instant} representation in UTC.
+   *
+   * @return this builder for chaining
+   */
+  public TemporalRuleBuilder toUtc() {
+    this.rules.add(new ToUtcRule());
+    return this;
+  }
+
+  /**
+   * Converts the temporal value to a {@link java.time.ZonedDateTime} in the given timezone.
+   *
+   * @param zone target timezone
+   * @return this builder for chaining
+   */
+  public TemporalRuleBuilder toZone(ZoneId zone) {
+    this.rules.add(new ToZoneRule(zone));
     return this;
   }
 

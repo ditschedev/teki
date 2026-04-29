@@ -7,6 +7,9 @@ import dev.ditsche.teki.Teki;
 import dev.ditsche.teki.error.ValidationException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.Test;
 
 class TemporalAnnotationTest {
@@ -159,5 +162,82 @@ class TemporalAnnotationTest {
     assertThatThrownBy(
             () -> Teki.from(AfterForm.class).validate(new AfterForm(LocalDate.of(2019, 1, 1))))
         .isInstanceOf(ValidationException.class);
+  }
+
+  // -------------------------------------------------------------------------
+  // @TruncateTo
+  // -------------------------------------------------------------------------
+
+  static class TruncateToForm {
+    @TruncateTo(ChronoUnit.DAYS)
+    Instant scheduledAt;
+
+    TruncateToForm(Instant scheduledAt) {
+      this.scheduledAt = scheduledAt;
+    }
+  }
+
+  @Test
+  void truncateToAnnotationTruncatesInstant() {
+    TruncateToForm form = new TruncateToForm(Instant.parse("2024-06-15T14:32:55Z"));
+    Teki.from(TruncateToForm.class).validate(form);
+    assertThat(form.scheduledAt).isEqualTo(Instant.parse("2024-06-15T00:00:00Z"));
+  }
+
+  @Test
+  void truncateToAnnotationAllowsNullWhenOptional() {
+    assertThat(Teki.from(TruncateToForm.class).check(new TruncateToForm(null)).isValid()).isTrue();
+  }
+
+  // -------------------------------------------------------------------------
+  // @ToUtc
+  // -------------------------------------------------------------------------
+
+  static class ToUtcForm {
+    @ToUtc Instant publishedAt;
+
+    ToUtcForm(Instant publishedAt) {
+      this.publishedAt = publishedAt;
+    }
+  }
+
+  @Test
+  void toUtcAnnotationPreservesInstant() {
+    Instant input = Instant.parse("2024-06-15T12:00:00Z");
+    ToUtcForm form = new ToUtcForm(input);
+    Teki.from(ToUtcForm.class).validate(form);
+    assertThat(form.publishedAt).isEqualTo(input);
+  }
+
+  @Test
+  void toUtcAnnotationAllowsNullWhenOptional() {
+    assertThat(Teki.from(ToUtcForm.class).check(new ToUtcForm(null)).isValid()).isTrue();
+  }
+
+  // -------------------------------------------------------------------------
+  // @ToZone
+  // -------------------------------------------------------------------------
+
+  static class ToZoneForm {
+    @ToZone("Europe/Berlin")
+    ZonedDateTime meetingAt;
+
+    ToZoneForm(ZonedDateTime meetingAt) {
+      this.meetingAt = meetingAt;
+    }
+  }
+
+  @Test
+  void toZoneAnnotationConvertsToTargetZone() {
+    ZonedDateTime input = Instant.parse("2024-06-15T12:00:00Z").atZone(ZoneId.of("UTC"));
+    ToZoneForm form = new ToZoneForm(input);
+    Teki.from(ToZoneForm.class).validate(form);
+    assertThat(form.meetingAt.getZone()).isEqualTo(ZoneId.of("Europe/Berlin"));
+    assertThat(form.meetingAt.toInstant()).isEqualTo(Instant.parse("2024-06-15T12:00:00Z"));
+  }
+
+  @Test
+  void toZoneAnnotationAllowsNullWhenOptional() {
+    assertThat(Teki.from(ToZoneForm.class).check(new ToZoneForm(null)).isValid()).isTrue();
   }
 }

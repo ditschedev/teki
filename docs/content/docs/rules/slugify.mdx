@@ -1,0 +1,45 @@
+---
+title: Slugify
+description: Transform a string into a URL-safe slug.
+---
+
+Use `slugify()` to normalize a string field into a URL-safe slug and write the result back to the field.
+
+```java
+import static dev.ditsche.teki.rule.builder.Rules.*;
+
+Teki schema = Teki.fromRules(
+    string("title").required().slugify()
+);
+```
+
+If validation succeeds, Teki writes the slugified value back to the field. The output always satisfies the [`slug`](/docs/rules/slug) rule.
+
+## Transformation pipeline
+
+Each step receives the output of the previous one. Using `"  Héllo, World!  "` as an example:
+
+| Step | Value |
+| ---- | ----- |
+| Input | `"  Héllo, World!  "` |
+| NFD normalize + strip non-ASCII (removes diacritics) | `"  Hello, World!  "` |
+| Lowercase | `"  hello, world!  "` |
+| Replace non-alphanumeric runs with `-` | `"-hello-world-"` |
+| Trim leading/trailing `-` | `"hello-world"` |
+
+An input that produces an empty string after the pipeline (e.g. `"!!!"`) is rejected.
+
+## Available on
+
+- `string(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.Slugify;
+
+public class ArticleRequest {
+    @Slugify
+    private String title;
+}
+```

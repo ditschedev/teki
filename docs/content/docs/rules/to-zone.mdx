@@ -1,0 +1,50 @@
+---
+title: To Zone
+description: Convert a temporal value to a ZonedDateTime in a given timezone.
+---
+
+Use `toZone(ZoneId)` to convert any supported temporal type to a `java.time.ZonedDateTime` in a specific timezone and write it back to the field.
+
+```java
+import java.time.ZoneId;
+import static dev.ditsche.teki.rule.builder.Rules.*;
+
+Teki schema = Teki.fromRules(
+    temporal("scheduledAt").required().toZone(ZoneId.of("Europe/Berlin")),
+    temporal("meetingAt").toZone(ZoneId.of("America/New_York"))
+);
+```
+
+The point in time is preserved — only the timezone representation changes. An `Instant` of `2024-06-15T12:00:00Z` converted to `Europe/Berlin` (UTC+2 in summer) becomes `2024-06-15T14:00:00+02:00[Europe/Berlin]`.
+
+## Input types
+
+`toZone` accepts any temporal type that `temporal()` recognizes:
+
+- `java.time.Instant`
+- `java.time.ZonedDateTime`
+- `java.time.OffsetDateTime`
+- `java.time.LocalDateTime`
+- `java.time.LocalDate`
+- `java.util.Date`
+- `java.util.Calendar`
+
+All are first converted to an `Instant`, then wrapped as `ZonedDateTime` in the target zone.
+
+## Available on
+
+- `temporal(...)`
+
+## Annotation equivalent
+
+```java
+import dev.ditsche.teki.annotation.ToZone;
+
+public class EventRequest {
+    @ToZone("Europe/Berlin")
+    private Instant startsAt;
+
+    @ToZone("America/New_York")
+    private ZonedDateTime meetingAt;
+}
+```

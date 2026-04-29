@@ -16,6 +16,7 @@ import dev.ditsche.teki.annotation.PositiveOrZero;
 import dev.ditsche.teki.annotation.Uuid;
 import dev.ditsche.teki.rule.Rule;
 import dev.ditsche.teki.rule.ruleset.*;
+import dev.ditsche.teki.validation.FieldAccess;
 import dev.ditsche.teki.validation.Validatable;
 import dev.ditsche.teki.validation.ValidationArray;
 import dev.ditsche.teki.validation.ValidationField;
@@ -24,8 +25,6 @@ import java.lang.reflect.AnnotatedParameterizedType;
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -101,6 +100,10 @@ final class AnnotationScanner {
       rules.add(new SlugRule());
       hasConstraints = true;
     }
+    if (field.isAnnotationPresent(Slugify.class)) {
+      rules.add(new SlugifyRule());
+      hasConstraints = true;
+    }
     if (field.isAnnotationPresent(Base64.class)) {
       rules.add(new Base64Rule(field.getAnnotation(Base64.class).urlSafe()));
       hasConstraints = true;
@@ -163,6 +166,18 @@ final class AnnotationScanner {
     }
     if (field.isAnnotationPresent(After.class)) {
       rules.add(new AfterRule(field.getAnnotation(After.class)));
+      hasConstraints = true;
+    }
+    if (field.isAnnotationPresent(TruncateTo.class)) {
+      rules.add(new TruncateToRule(field.getAnnotation(TruncateTo.class)));
+      hasConstraints = true;
+    }
+    if (field.isAnnotationPresent(ToUtc.class)) {
+      rules.add(new ToUtcRule());
+      hasConstraints = true;
+    }
+    if (field.isAnnotationPresent(ToZone.class)) {
+      rules.add(new ToZoneRule(field.getAnnotation(ToZone.class)));
       hasConstraints = true;
     }
     if (field.isAnnotationPresent(Pattern.class)) {
@@ -300,6 +315,7 @@ final class AnnotationScanner {
     if (a instanceof Phone) return new PhoneRule();
     if (a instanceof MacAddress) return new MacAddressRule();
     if (a instanceof Slug) return new SlugRule();
+    if (a instanceof Slugify) return new SlugifyRule();
     if (a instanceof Base64 b) return new Base64Rule(b.urlSafe());
     if (a instanceof SemVer) return new SemVerRule();
     if (a instanceof Iban) return new IbanRule();
@@ -316,6 +332,9 @@ final class AnnotationScanner {
     if (a instanceof FutureOrPresent) return new FutureOrPresentRule();
     if (a instanceof Before b) return new BeforeRule(b);
     if (a instanceof After af) return new AfterRule(af);
+    if (a instanceof TruncateTo t) return new TruncateToRule(t);
+    if (a instanceof ToUtc) return new ToUtcRule();
+    if (a instanceof ToZone tz) return new ToZoneRule(tz);
     if (a instanceof Pattern p) return new PatternRule(p.value());
     if (a instanceof Min m) return new MinRule(m.value());
     if (a instanceof Max m) return new MaxRule(m.value());
@@ -385,10 +404,6 @@ final class AnnotationScanner {
   }
 
   private static List<Field> getAllFields(Class<?> type) {
-    List<Field> fields = new ArrayList<>();
-    for (Class<?> c = type; c != null; c = c.getSuperclass()) {
-      fields.addAll(Arrays.asList(c.getDeclaredFields()));
-    }
-    return fields;
+    return FieldAccess.getAllFields(type);
   }
 }

@@ -29,6 +29,7 @@
     "not-blank",
     "one-of",
     "slug",
+    "slugify",
     "base64",
     "semver",
     "---Size and range---",
@@ -44,6 +45,9 @@
     "past-or-present",
     "future-or-present",
     "before",
-    "after"
+    "after",
+    "truncate-to",
+    "to-utc",
+    "to-zone"
   ]
 }

@@ -321,4 +321,173 @@ class StringAnnotationTest {
     assertThatThrownBy(() -> Teki.from(IbanForm.class).validate(new IbanForm(null)))
         .isInstanceOf(ValidationException.class);
   }
+
+  // -------------------------------------------------------------------------
+  // @AlphaNumeric
+  // -------------------------------------------------------------------------
+
+  static class AlphaNumericForm {
+    @AlphaNumeric String username;
+
+    AlphaNumericForm(String username) {
+      this.username = username;
+    }
+  }
+
+  @Test
+  void alphaNumericAnnotationAcceptsLettersAndDigits() {
+    assertThat(Teki.from(AlphaNumericForm.class).check(new AlphaNumericForm("abc123")).isValid())
+        .isTrue();
+  }
+
+  @Test
+  void alphaNumericAnnotationRejectsHyphen() {
+    assertThatThrownBy(
+            () -> Teki.from(AlphaNumericForm.class).validate(new AlphaNumericForm("abc-123")))
+        .isInstanceOf(ValidationException.class);
+  }
+
+  @Test
+  void alphaNumericAnnotationAllowsNullWhenOptional() {
+    assertThat(Teki.from(AlphaNumericForm.class).check(new AlphaNumericForm(null)).isValid())
+        .isTrue();
+  }
+
+  // -------------------------------------------------------------------------
+  // @IpAddress
+  // -------------------------------------------------------------------------
+
+  static class IpForm {
+    @IpAddress String ip;
+
+    IpForm(String ip) {
+      this.ip = ip;
+    }
+  }
+
+  static class Ipv4Form {
+    @IpAddress(version = 4)
+    String ip;
+
+    Ipv4Form(String ip) {
+      this.ip = ip;
+    }
+  }
+
+  static class Ipv6Form {
+    @IpAddress(version = 6)
+    String ip;
+
+    Ipv6Form(String ip) {
+      this.ip = ip;
+    }
+  }
+
+  @Test
+  void ipAddressAnnotationAcceptsIpv4() {
+    assertThat(Teki.from(IpForm.class).check(new IpForm("192.168.1.1")).isValid()).isTrue();
+  }
+
+  @Test
+  void ipAddressAnnotationAcceptsIpv6() {
+    assertThat(Teki.from(IpForm.class).check(new IpForm("2001:db8::1")).isValid()).isTrue();
+  }
+
+  @Test
+  void ipAddressAnnotationRejectsInvalid() {
+    assertThatThrownBy(() -> Teki.from(IpForm.class).validate(new IpForm("999.999.999.999")))
+        .isInstanceOf(ValidationException.class);
+  }
+
+  @Test
+  void ipv4AnnotationAcceptsIpv4() {
+    assertThat(Teki.from(Ipv4Form.class).check(new Ipv4Form("10.0.0.1")).isValid()).isTrue();
+  }
+
+  @Test
+  void ipv4AnnotationRejectsIpv6() {
+    assertThatThrownBy(() -> Teki.from(Ipv4Form.class).validate(new Ipv4Form("2001:db8::1")))
+        .isInstanceOf(ValidationException.class);
+  }
+
+  @Test
+  void ipv6AnnotationAcceptsIpv6() {
+    assertThat(Teki.from(Ipv6Form.class).check(new Ipv6Form("::1")).isValid()).isTrue();
+  }
+
+  @Test
+  void ipv6AnnotationRejectsIpv4() {
+    assertThatThrownBy(() -> Teki.from(Ipv6Form.class).validate(new Ipv6Form("192.168.1.1")))
+        .isInstanceOf(ValidationException.class);
+  }
+
+  // -------------------------------------------------------------------------
+  // @CreditCard
+  // -------------------------------------------------------------------------
+
+  static class CreditCardForm {
+    @CreditCard String card;
+
+    CreditCardForm(String card) {
+      this.card = card;
+    }
+  }
+
+  @Test
+  void creditCardAnnotationAcceptsValidNumber() {
+    assertThat(
+            Teki.from(CreditCardForm.class)
+                .check(new CreditCardForm("4111111111111111"))
+                .isValid())
+        .isTrue();
+  }
+
+  @Test
+  void creditCardAnnotationRejectsInvalidNumber() {
+    assertThatThrownBy(
+            () -> Teki.from(CreditCardForm.class).validate(new CreditCardForm("4111111111111")))
+        .isInstanceOf(ValidationException.class);
+  }
+
+  @Test
+  void creditCardAnnotationAllowsNullWhenOptional() {
+    assertThat(Teki.from(CreditCardForm.class).check(new CreditCardForm(null)).isValid()).isTrue();
+  }
+
+  // -------------------------------------------------------------------------
+  // @Slugify
+  // -------------------------------------------------------------------------
+
+  static class SlugifyForm {
+    @Slugify String title;
+
+    SlugifyForm(String title) {
+      this.title = title;
+    }
+  }
+
+  @Test
+  void slugifyAnnotationTransformsTitle() {
+    SlugifyForm form = new SlugifyForm("Hello World");
+    Teki.from(SlugifyForm.class).validate(form);
+    assertThat(form.title).isEqualTo("hello-world");
+  }
+
+  @Test
+  void slugifyAnnotationStripsSpecialChars() {
+    SlugifyForm form = new SlugifyForm("product (v2.0)!");
+    Teki.from(SlugifyForm.class).validate(form);
+    assertThat(form.title).isEqualTo("product-v2-0");
+  }
+
+  @Test
+  void slugifyAnnotationRejectsUnslugifiableInput() {
+    assertThatThrownBy(() -> Teki.from(SlugifyForm.class).validate(new SlugifyForm("!!!")))
+        .isInstanceOf(ValidationException.class);
+  }
+
+  @Test
+  void slugifyAnnotationAllowsNullWhenOptional() {
+    assertThat(Teki.from(SlugifyForm.class).check(new SlugifyForm(null)).isValid()).isTrue();
+  }
 }

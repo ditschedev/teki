@@ -606,4 +606,84 @@ class StringRuleTest {
   void ibanRejectsNonString() {
     assertThat(new IbanRule().test(42).passed()).isFalse();
   }
+
+  // -------------------------------------------------------------------------
+  // SlugifyRule
+  // -------------------------------------------------------------------------
+
+  @Test
+  void slugifyLowercasesInput() {
+    var result = new SlugifyRule().test("Hello World");
+    assertThat(result.passed()).isTrue();
+    assertThat(result.value()).isEqualTo("hello-world");
+  }
+
+  @Test
+  void slugifyReplacesSpacesWithHyphens() {
+    var result = new SlugifyRule().test("my blog post");
+    assertThat(result.passed()).isTrue();
+    assertThat(result.value()).isEqualTo("my-blog-post");
+  }
+
+  @Test
+  void slugifyCollapsesMultipleNonAlphanumeric() {
+    var result = new SlugifyRule().test("hello   ---   world");
+    assertThat(result.passed()).isTrue();
+    assertThat(result.value()).isEqualTo("hello-world");
+  }
+
+  @Test
+  void slugifyStripsLeadingAndTrailingHyphens() {
+    var result = new SlugifyRule().test("  hello world  ");
+    assertThat(result.passed()).isTrue();
+    assertThat(result.value()).isEqualTo("hello-world");
+  }
+
+  @Test
+  void slugifyStripsAccents() {
+    var result = new SlugifyRule().test("Héllo Wörld");
+    assertThat(result.passed()).isTrue();
+    assertThat(result.value()).isEqualTo("hello-world");
+  }
+
+  @Test
+  void slugifyRemovesSpecialCharacters() {
+    var result = new SlugifyRule().test("product (v2.0)!");
+    assertThat(result.passed()).isTrue();
+    assertThat(result.value()).isEqualTo("product-v2-0");
+  }
+
+  @Test
+  void slugifyPreservesAlreadyValidSlug() {
+    var result = new SlugifyRule().test("my-blog-post");
+    assertThat(result.passed()).isTrue();
+    assertThat(result.value()).isEqualTo("my-blog-post");
+  }
+
+  @Test
+  void slugifyProducesOutputPassingSlugRule() {
+    String[] inputs = {"Hello World", "Héllo!", "My Blog Post 2024", "foo---bar"};
+    for (String input : inputs) {
+      var slugified = (String) new SlugifyRule().test(input).value();
+      assertThat(new SlugRule().test(slugified).passed())
+          .as("slugified output '%s' should pass SlugRule", slugified)
+          .isTrue();
+    }
+  }
+
+  @Test
+  void slugifyRejectsInputThatProducesEmptySlug() {
+    assertThat(new SlugifyRule().test("!!!").passed()).isFalse();
+    assertThat(new SlugifyRule().test("---").passed()).isFalse();
+  }
+
+  @Test
+  void slugifyRejectsNull() {
+    assertThat(new SlugifyRule().test(null).passed()).isFalse();
+  }
+
+  @Test
+  void slugifyRejectsNonString() {
+    assertThat(new SlugifyRule().test(42).passed()).isFalse();
+  }
 }
