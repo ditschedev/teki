@@ -436,9 +436,7 @@ class StringAnnotationTest {
   @Test
   void creditCardAnnotationAcceptsValidNumber() {
     assertThat(
-            Teki.from(CreditCardForm.class)
-                .check(new CreditCardForm("4111111111111111"))
-                .isValid())
+            Teki.from(CreditCardForm.class).check(new CreditCardForm("4111111111111111")).isValid())
         .isTrue();
   }
 

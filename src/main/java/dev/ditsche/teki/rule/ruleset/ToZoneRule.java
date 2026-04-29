@@ -12,8 +12,8 @@ import java.util.Map;
 /**
  * Transforms a temporal value to a {@link ZonedDateTime} in the given {@link ZoneId}.
  *
- * <p>Accepts any temporal type supported by Teki, converts it to an {@link Instant}, and then
- * wraps it as a {@link ZonedDateTime} in the target zone.
+ * <p>Accepts any temporal type supported by Teki, converts it to an {@link Instant}, and then wraps
+ * it as a {@link ZonedDateTime} in the target zone.
  *
  * @author Tobias Dittmann
  */

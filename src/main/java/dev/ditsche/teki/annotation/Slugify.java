@@ -8,8 +8,8 @@ import java.lang.annotation.Target;
 /**
  * Transforms a string field into a URL-safe slug.
  *
- * <p>Lowercases the value, strips diacritics, and replaces runs of non-alphanumeric characters
- * with hyphens. An input that produces an empty slug is rejected.
+ * <p>Lowercases the value, strips diacritics, and replaces runs of non-alphanumeric characters with
+ * hyphens. An input that produces an empty slug is rejected.
  *
  * @author Tobias Dittmann
  */

@@ -154,8 +154,7 @@ class StringRuleBuilderTest {
   @Test
   void notBlankRejectsNull() {
     Teki teki = Teki.fromRules(string("value").notBlank());
-    assertThatThrownBy(() -> teki.validate(new Form(null)))
-        .isInstanceOf(ValidationException.class);
+    assertThatThrownBy(() -> teki.validate(new Form(null))).isInstanceOf(ValidationException.class);
   }
 
   // -------------------------------------------------------------------------

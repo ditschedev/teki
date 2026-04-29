@@ -183,7 +183,8 @@ class TemporalRuleBuilderTest {
   @Test
   void toZoneWritesZonedDateTimeBackToField() {
     Teki teki = Teki.fromRules(temporal("scheduledAt").toZone(ZoneId.of("Europe/Berlin")));
-    ZonedEvent event = new ZonedEvent(Instant.parse("2024-06-15T12:00:00Z").atZone(ZoneId.of("UTC")));
+    ZonedEvent event =
+        new ZonedEvent(Instant.parse("2024-06-15T12:00:00Z").atZone(ZoneId.of("UTC")));
     teki.validate(event);
     assertThat(event.scheduledAt).isInstanceOf(ZonedDateTime.class);
     assertThat(event.scheduledAt.getZone()).isEqualTo(ZoneId.of("Europe/Berlin"));
