@@ -124,9 +124,12 @@
                             <maven>
                                 <mavenCentral>
                                     <sonatype>
-                                        <active>RELEASE</active>
-                                        <url>https://central.sonatype.com/api/v1/publisher</url>
-                                        <stagingRepositories>target/staging-deploy</stagingRepositories>
+                                      <active>RELEASE</active>
+                                      <url>https://central.sonatype.com/api/v1/publisher</url>
+                                      <stagingRepositories>target/staging-deploy</stagingRepositories>
+                                      <skipPublicationCheck>true</skipPublicationCheck>
+                                      <retryDelay>30</retryDelay>
+                                      <maxRetries>150</maxRetries>
                                     </sonatype>
                                 </mavenCentral>
                             </maven>
