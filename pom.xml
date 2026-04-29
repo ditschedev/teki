@@ -112,7 +112,7 @@
             <plugin>
                 <groupId>org.jreleaser</groupId>
                 <artifactId>jreleaser-maven-plugin</artifactId>
-                <version>1.15.0</version>
+                <version>1.23.0</version>
                 <configuration>
                     <jreleaser>
                         <signing>
@@ -127,7 +127,6 @@
                                       <active>RELEASE</active>
                                       <url>https://central.sonatype.com/api/v1/publisher</url>
                                       <stagingRepositories>target/staging-deploy</stagingRepositories>
-                                      <skipPublicationCheck>true</skipPublicationCheck>
                                       <retryDelay>30</retryDelay>
                                       <maxRetries>150</maxRetries>
                                     </sonatype>
