@@ -35,6 +35,11 @@ import {
   CalendarX2,
   ChevronLeft,
   ChevronRight,
+  CaseSensitive,
+  CalendarArrowDown,
+  CalendarArrowUp,
+  CalendarPlus,
+  CalendarMinus
 } from "lucide-react";
 
 Import the builder entry points from `Rules` when using the fluent API:
@@ -134,7 +139,7 @@ Rules are organized around the shape of the field first, then the constraints yo
   <Card
     title="Alphanumeric"
     href="/docs/rules/alphanum"
-    icon={<Fingerprint />}
+    icon={<CaseSensitive />}
     description="Allow only letters and digits."
   />
   <Card
@@ -191,8 +196,8 @@ Rules are organized around the shape of the field first, then the constraints yo
     description="Require an exact length."
   />
   <Card
-    title="Size"
-    href="/docs/rules/size"
+    title="Between"
+    href="/docs/rules/between"
     icon={<Maximize2 />}
     description="Require a value, length, or size to fall within a range."
   />
@@ -228,25 +233,25 @@ Rules are organized around the shape of the field first, then the constraints yo
   <Card
     title="Past or Present"
     href="/docs/rules/past-or-present"
-    icon={<CalendarCheck2 />}
+    icon={<CalendarMinus />}
     description="Require a date in the past or equal to now."
   />
   <Card
     title="Future or Present"
     href="/docs/rules/future-or-present"
-    icon={<CalendarX2 />}
+    icon={<CalendarPlus />}
     description="Require a date in the future or equal to now."
   />
   <Card
     title="Before"
     href="/docs/rules/before"
-    icon={<ChevronLeft />}
+    icon={<CalendarArrowUp />}
     description="Require a date before a fixed boundary."
   />
   <Card
     title="After"
     href="/docs/rules/after"
-    icon={<ChevronRight />}
+    icon={<CalendarArrowDown />}
     description="Require a date after a fixed boundary."
   />
 </Cards>
